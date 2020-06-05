@@ -15,15 +15,23 @@ $api = app(Router::class);
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 $api->version('v1', function (Router $api) {
     $api->group(['prefix' => 'auth'], function(Router $api) {
-        $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
-        $api->post('logout', 'App\\Api\\V1\\Controllers\\LogoutController@logout');
+        $api->post('login/seller', 'App\\Api\\V1\\Controllers\\Auth\\LoginSellerController@login');
+        $api->post('login/seller/2fa', 'App\\Api\\V1\\Controllers\\Auth\\LoginSellerController@Confirm');
+        $api->post('login/customer', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@login');
+        $api->post('login/customer/confirm', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@Confirm');
         $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
     });
-});
 
-Route::post('register', 'AuthSellerController@register');
-Route::post('login', 'AuthSellerController@login');
-Route::get('product/{id}', 'ProductController@product')->middleware('jwt.auth');
+    //Authorizationed Zone
+    $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
+        $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
+        $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
+    });
+
+    //live part
+    //$api->group(['middleware' => 'jwt.auth'], function(Router $api) {
+        $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
+    //});
+});

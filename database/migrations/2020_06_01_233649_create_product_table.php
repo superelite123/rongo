@@ -23,6 +23,8 @@ class CreateProductTable extends Migration
             $table->integer('shipper_id');
             $table->float('price',8,2);
             $table->float('shipping_fee',8,2)->default(0);
+            $table->integer('status_id');
+            $table->integer('store_id');
             $table->timestamps();
         });
     }

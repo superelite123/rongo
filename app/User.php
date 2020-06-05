@@ -47,4 +47,14 @@ class User extends Authenticatable implements JWTSubject
     {
       return [];
     }
+
+    public function rStore()
+    {
+        return $this->hasOne(Store::class,'user_id');
+    }
+
+    public function rProductLike()
+    {
+        return $this->hasMany(ProductUserLike::class,'user_id');
+    }
 }

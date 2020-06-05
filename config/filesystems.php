@@ -47,7 +47,16 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-
+        'live_photo' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/public/LivePhoto'),
+            'visibility' => 'public',
+        ],
+        'product_portfolio' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/public/ProductPortfolio'),
+            'visibility' => 'public',
+        ],
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
