@@ -14,4 +14,9 @@ return [
         'live' => '2',
         'ended' => '2',
     ],
+    '2fa_expiry' => 1,
+    'USERTYPE' => [
+        'SELLER' => 1,
+        'CUSTOMER' => 2
+    ]
 ];

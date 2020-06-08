@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
 //Models
 use App\User;
-
+use Config;
+use Carbon\Carbon;
 class LoginSellerController extends AuthController
 {
     /*
@@ -46,14 +47,55 @@ class LoginSellerController extends AuthController
      *
      * @param:email,password
      */
-    public function loginSeller1(LoginSellerRequest $request,JWTAuth $JWTAuth)
+    public function login(LoginSellerRequest $request,JWTAuth $JWTAuth)
     {
         $credentials = $request->only(['email', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        $user = User::where(['email' => $request->email,'password' => $request->pwd])->first();
 
-        return $this->respondWithToken($token);
+        if($user != null)
+        {
+            $this->Generate2faPin($user->id);
+            return response()->json(['success' => $user->id]);
+        }
+        {
+            return response()->json(['success' => -1]);
+        }
+    }
+    /**
+     * Log in Confirm
+     *
+     * @param:user_id,password
+     */
+    public function confirm(Request $request)
+    {
+        $user = User::find($request->id);
+        //expired?
+        if($user->token_2fa_expiry < Carbon::now())
+        {
+            return response()->json(['success' => 0]);
+        }
+        if($user->token_2fa != $request->pwd)
+        {
+            $this->Generate2faPin();
+            return response()->json(['success' => -1]);
+        }
+        if($user->token_2fa != $request->pwd)
+        {
+            $token = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(7)->timestamp]);
+            return response()->json(['success' => -1,'token' => $token]);
+        }
+    }
+
+    /**
+     * @Generate Two factor pin code
+     */
+    public function Generate2faPin($userId)
+    {
+        $pin = mt_rand(100000, 999999);
+        $user = User::find($userId);
+        $user->token_2fa = $pin;
+        $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
+        $user->save();
     }
 }

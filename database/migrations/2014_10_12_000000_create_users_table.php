@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('lastname_k')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('token_2fa')->nullable();
-            $table->datetime('token_2fa_expiry')->nullable();
+            $table->timestamp('token_2fa_expiry',0)->nullable();
             $table->tinyInteger('type')->default(1);
             $table->Integer('address_id')->nullable();
             $table->rememberToken()->nullable();

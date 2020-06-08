@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStoreTable extends Migration
+class CreateLiveChatTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateStoreTable extends Migration
      */
     public function up()
     {
-        Schema::create('stores', function (Blueprint $table) {
+        Schema::create('live_chat', function (Blueprint $table) {
             $table->id();
+            $table->integer('live_id');
             $table->integer('user_id');
-            $table->text('description');
-            $table->string('desc_photo');
+            $table->string('message');
+            $table->integer('time');
+            $table->tinyInteger('type')->default('1');
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ class CreateStoreTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('store');
+        Schema::dropIfExists('live_chat');
     }
 }

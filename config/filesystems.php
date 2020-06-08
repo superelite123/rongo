@@ -57,6 +57,11 @@ return [
             'root'   => storage_path('app/public/ProductPortfolio'),
             'visibility' => 'public',
         ],
+        'store_portfolio' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/public/StorePhoto'),
+            'visibility' => 'public',
+        ],
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

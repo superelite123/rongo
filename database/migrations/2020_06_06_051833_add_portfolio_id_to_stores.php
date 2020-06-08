@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStoreTable extends Migration
+class AddPortfolioIdToStores extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateStoreTable extends Migration
      */
     public function up()
     {
-        Schema::create('stores', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id');
-            $table->text('description');
-            $table->string('desc_photo');
-            $table->timestamps();
+        Schema::table('stores', function (Blueprint $table) {
+            //
+            $table->integer('thumbnail_id')->default(0);
         });
     }
 
@@ -29,6 +26,8 @@ class CreateStoreTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('store');
+        Schema::table('stores', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -19,8 +19,9 @@ $api->version('v1', function (Router $api) {
     $api->group(['prefix' => 'auth'], function(Router $api) {
         $api->post('login/seller', 'App\\Api\\V1\\Controllers\\Auth\\LoginSellerController@login');
         $api->post('login/seller/2fa', 'App\\Api\\V1\\Controllers\\Auth\\LoginSellerController@Confirm');
+        $api->post('register/customer', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@register');
         $api->post('login/customer', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@login');
-        $api->post('login/customer/confirm', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@Confirm');
+        $api->post('login/customer/newDevice', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@newDevice');
         $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
     });
 
@@ -29,9 +30,4 @@ $api->version('v1', function (Router $api) {
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
         $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
     });
-
-    //live part
-    //$api->group(['middleware' => 'jwt.auth'], function(Router $api) {
-        $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
-    //});
 });

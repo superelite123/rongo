@@ -14,7 +14,7 @@ class Live extends Model
 
     public function rTag()
     {
-        return $this->hasOne(Tag::class,'tag_id');
+        return $this->belongsTo(Tag::class,'tag_id');
     }
 
     public function rStore()
@@ -25,5 +25,10 @@ class Live extends Model
     public function rUsers()
     {
         return $this->hasMany(LiveHasUser::class,'live_id');
+    }
+
+    public function getnTotalUsersAttribute()
+    {
+        return $this->rUsers()->count();
     }
 }

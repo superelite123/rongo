@@ -35,6 +35,6 @@ class Product extends Model
 
     public function Thumbnail()
     {
-        return $this->rPortfolio()->get
+        return $this->rPortfolio()->where('order','=', 1);
     }
 }

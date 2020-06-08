@@ -57,4 +57,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(ProductUserLike::class,'user_id');
     }
+
+    public function rDevice()
+    {
+        return $this->hasMany(DeviceUser::class,'user_id');
+    }
 }
