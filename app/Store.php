@@ -34,7 +34,7 @@ class Store extends Model
 
     public function rThumbnail()
     {
-        return $this->belongsTo(StorePortfolio::class,'portfolio_id');
+        return $this->belongsTo(StorePortfolio::class,'thumbnail_id');
     }
 
     public function rEvaluation()

@@ -28,6 +28,10 @@ $api->version('v1', function (Router $api) {
     //Authorizationed Zone
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
+        $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
+        $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@like');
         $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
+        $api->get('stores','App\\Api\\V1\\Controllers\\StoreController@index');
+        $api->get('store/{id}','App\\Api\\V1\\Controllers\\StoreController@show');
     });
 });

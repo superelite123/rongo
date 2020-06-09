@@ -8,6 +8,7 @@ use Storage;
 //Load Model
 use App\User;
 use App\Product;
+use App\Live;
 use App\ProductUserLike;
 //Config
 use Config;
@@ -39,7 +40,8 @@ class ProductController extends Controller
         }
 
         $products =$cond->get();
-        $json = ['products' => [],'thumbnailRootUrl' => asset(Storage::url('product_portfolio')),'userName' => auth()->user()->nickname];
+        $thumbnailRootUrl = asset(Storage::url('ProductPortfolio')).'/';
+        $json = ['products' => []];
         foreach($products as $product)
         {
             $item = [];
@@ -48,8 +50,9 @@ class ProductController extends Controller
             if($flag != -1)
             {
                 $item = $json['products'][$flag];
-                $item['thumbnail'] = $product->order == 1?$product->filename:$item['thumbnail'];
+                $item['thumbnail'] = $product->order == 1?$thumbnailRootUrl.$product->filename:$item['thumbnail'];
                 $item['isLike'] = $product->isLike == 1?1:$item['isLike'];
+
                 $json['products'][$flag] = $item;
             }
             else{
@@ -59,17 +62,64 @@ class ProductController extends Controller
                 $item['status'] = $product->status_id;
                 $item['isLike'] = $product->isLike;
                 $item['thumbnail'] = $product->order == 1?$product->filename:'2.png';
+                $item['thumbnail'] = $thumbnailRootUrl.$item['thumbnail'];
+                $item['storeName'] = $product->StoreInfo['storeName'];;
+
                 $json['products'][] = $item;
             }
         }
-        return response()->json(['products' => $json]);
+        return response()->json($json);
     }
 
-    public function show(Product $product)
-    {
-        return $product;
+    public function show($id){
+        $product = Product::find($id);
+        $response = ['product' => null];
+        if($product != null){
+            $response = [];
+            $response['id'] = $product->id;
+            $response['label'] = $product->label;
+            $response['number'] = $product->number;
+            $response['description'] = $product->description;
+            $response['price'] = $product->price;
+            $response['nLikes'] = $product->rUserLike()->count();
+            $response['isLike'] = $product->IsLike;
+            //relatied store
+            $response = array_merge($response,$product->StoreInfo);
+
+            //Related Lives
+            $response['lives'] = [];
+            $lives = $product->rLive;
+            foreach($lives as $liveId)
+            {
+                $live = Live::find($liveId->live_id);
+                $response['lives'][] = LiveController::toArray($live);
+            }
+            //portfolios
+            $response['portfolios'] = [];
+            foreach($product->rPortfolio()->orderby('order')->get() as $portfolio)
+            {
+                $response['portfolios'][] = asset(Storage::url('ProductPortfolio')).'/'.$portfolio->filename;
+            }
+        }
+        return response()->json(['product' => $response]);
     }
 
+    public function like(Request $request){
+
+        $product = Product::find($request->product_id);
+
+        $bUserLike = $product->rUserLike()->where('user_id' , auth()->user()->id)->first();
+        if($bUserLike == null)
+        {
+            $product->rUserLike()->saveMany([
+                new ProductUserLike(['user_id' => auth()->user()->id])
+            ]);
+        }
+        else{
+            $bUserLike->delete();
+        }
+        return 1;
+    }
 
     public function store(Request $request)
     {

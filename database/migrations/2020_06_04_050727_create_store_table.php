@@ -18,6 +18,7 @@ class CreateStoreTable extends Migration
             $table->integer('user_id');
             $table->text('description');
             $table->string('desc_photo');
+            $table->integer('background_id');
             $table->timestamps();
         });
     }

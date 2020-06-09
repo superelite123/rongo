@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
+use Storage;
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
@@ -61,5 +61,23 @@ class User extends Authenticatable implements JWTSubject
     public function rDevice()
     {
         return $this->hasMany(DeviceUser::class,'user_id');
+    }
+
+    public function rStoreFollow()
+    {
+        return $this->hasMany(StoreUserFollow::class,'user_id');
+    }
+
+    public function getcIconAttribute()
+    {
+        $icon =  $this->icon != null || $this->icon == ''?$this->icon:'default.png';
+        if( file_exists( public_path(Storage::url('UserPhoto')).'/'.$icon ) )
+        {
+            return asset(Storage::url('UserPhoto').'/'.$icon);
+        }
+        else
+        {
+            return asset(Storage::url('UserPhoto').'/default.png');
+        }
     }
 }

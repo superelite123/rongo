@@ -13,7 +13,7 @@ class CreateStorePortfolioTable extends Migration
      */
     public function up()
     {
-        Schema::create('store_portfolio', function (Blueprint $table) {
+        Schema::create('store_background', function (Blueprint $table) {
             $table->id();
             $table->integer('store_id');
             $table->string('filename');

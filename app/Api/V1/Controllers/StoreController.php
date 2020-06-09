@@ -11,7 +11,7 @@ class StoreController extends Controller
      */
     public function index()
     {
-        $json = ['stores' => [],'thumbnailRootUrl' => asset(Storage::url('store_portfolio'))];
+        $response = ['stores' => []];
         $stores = Store::all();
         foreach($stores as $store)
         {
@@ -19,11 +19,36 @@ class StoreController extends Controller
             $item['id'] = $store->id;
             $item['description'] = $store->description;
             $item['nTotalFollows'] = $store->nTotalFollows;
-            $item['thumbnail'] = $store->rThumbnail->filename;
+            $item['icon'] = $store->rUser->cIcon;
 
-            $json['stores'][] = $item;
+            $response['stores'][] = $item;
         }
 
-        return response()->json($json);
+        return response()->json($response);
+    }
+
+    /**
+     * @Show Store Detail
+     */
+    public function show($id)
+    {
+
+    }
+
+    public static function toArray(Store $store)
+    {
+        $item = [];
+        if($live != null)
+        {
+            $item = [];
+            $item['id'] = $store->id;
+            $item['description'] = $store->description;
+            $item['nTotalFollows'] = $store->nTotalFollows;
+            $item['thumbnail'] = asset(Storage::url('store_portfolio')).'/'.$store->rThumbnail->filename;
+        }else{
+            $item = null;
+        }
+
+        return $item;
     }
 }

@@ -13,7 +13,7 @@ class CreateLiveStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('live_status', function (Blueprint $table) {
+        Schema::create('statuses', function (Blueprint $table) {
             $table->id();
             $table->string('label');
             $table->timestamps();

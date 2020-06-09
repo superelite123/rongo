@@ -15,21 +15,32 @@ class LiveController extends Controller
      */
     public function index()
     {
-        $json = ['lives' => [],'thumbnailRootUrl' => asset(Storage::url('live_photo'))];
+        $json = ['lives' => []];
 
         $lives = Live::all();
         foreach($lives as $live)
         {
-            $item = [];
+            $json['lives'][] = $this->toArray($live);
+        }
+        return response()->json($json);
+    }
+
+    public static function toArray(Live $live)
+    {
+        $item = [];
+        if($live != null)
+        {
             $item['id']             = $live->id;
             $item['title']          = $live->title;
             $item['tag']            = $live->rTag->label;
             $item['nTotalUsers']    = $live->nTotalUsers;
-            $item['thumbnail']      = $live->photo;
+            $item['thumbnail']      = asset(Storage::url('live_photo')).'/'.$live->photo;
             $item['status']         = $live->status_id;
-
-            $json['lives'][] = $item;
+            $item['date']           = $live->created_at->format('Y-m-d');
+        }else{
+            $item = null;
         }
-        return response()->json($json);
+
+        return $item;
     }
 }
