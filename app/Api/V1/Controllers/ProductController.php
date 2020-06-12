@@ -63,7 +63,7 @@ class ProductController extends Controller
                 $item['isLike'] = $product->isLike;
                 $item['thumbnail'] = $product->order == 1?$product->filename:'2.png';
                 $item['thumbnail'] = $thumbnailRootUrl.$item['thumbnail'];
-                $item['storeName'] = $product->StoreInfo['storeName'];;
+                $item['storeName'] = $product->StoreInfo['storeName'];
 
                 $json['products'][] = $item;
             }
@@ -114,11 +114,12 @@ class ProductController extends Controller
             $product->rUserLike()->saveMany([
                 new ProductUserLike(['user_id' => auth()->user()->id])
             ]);
+            return response()->json(['like' => 1]);
         }
         else{
             $bUserLike->delete();
+            return response()->json(['like' => 0]);
         }
-        return 1;
     }
 
     public function store(Request $request)

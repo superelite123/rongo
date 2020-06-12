@@ -17,7 +17,7 @@ class StoreController extends Controller
         {
             $item = [];
             $item['id'] = $store->id;
-            $item['description'] = $store->description;
+            $item['name'] = $store->rUser->nickname;
             $item['nTotalFollows'] = $store->nTotalFollows;
             $item['icon'] = $store->rUser->cIcon;
 

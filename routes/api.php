@@ -27,10 +27,26 @@ $api->version('v1', function (Router $api) {
 
     //Authorizationed Zone
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
+        /**
+         * Product
+         */
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
         $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@like');
+        /**
+         * Live
+         */
         $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
+        $api->post('live/create', 'App\\Api\\V1\\Controllers\\LiveController@create');
+        $api->get('live/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
+        $api->get('live/start/{id}', 'App\\Api\\V1\\Controllers\\LiveController@start');
+        $api->get('live/publish/{id}', 'App\\Api\\V1\\Controllers\\LiveController@publish');
+        $api->get('live/stop/{id}', 'App\\Api\\V1\\Controllers\\LiveController@stop');
+        $api->get('live/state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
+        $api->get('live/view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
+        /**
+         * Store
+         */
         $api->get('stores','App\\Api\\V1\\Controllers\\StoreController@index');
         $api->get('store/{id}','App\\Api\\V1\\Controllers\\StoreController@show');
     });

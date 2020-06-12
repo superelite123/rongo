@@ -16,9 +16,10 @@ class CreateLivesTable extends Migration
         Schema::create('lives', function (Blueprint $table) {
             $table->id();
             $table->string('photo');
-            $table->string('video')->nullable();
             $table->string('title');
+            $table->string('stream_id');
             $table->Integer('store_id');
+            $table->string('record')->nullable();
             $table->Integer('tag_id');
             $table->Integer('status');
             $table->timestamps();

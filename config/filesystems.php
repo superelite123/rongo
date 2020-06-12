@@ -62,6 +62,11 @@ return [
             'root'   => storage_path('app/public/StorePhoto'),
             'visibility' => 'public',
         ],
+        'user_icon' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/public/UserIcon'),
+            'visibility' => 'public',
+        ],
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

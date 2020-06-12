@@ -32,11 +32,6 @@ class Store extends Model
         return $this->rUsersFollow()->count();
     }
 
-    public function rThumbnail()
-    {
-        return $this->belongsTo(StorePortfolio::class,'thumbnail_id');
-    }
-
     public function rEvaluation()
     {
         return $this->hasMany(StoreUserEvaluation::class,'store_id');
@@ -45,5 +40,10 @@ class Store extends Model
     public function rEvaluationByType($type)
     {
         return $this->rEvaluation()->where('type',$type)->get();
+    }
+
+    public function getEvaluationAttribute()
+    {
+        $data = $this->rEvaluation()->groupby();
     }
 }

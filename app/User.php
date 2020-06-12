@@ -71,13 +71,13 @@ class User extends Authenticatable implements JWTSubject
     public function getcIconAttribute()
     {
         $icon =  $this->icon != null || $this->icon == ''?$this->icon:'default.png';
-        if( file_exists( public_path(Storage::url('UserPhoto')).'/'.$icon ) )
+        if( file_exists( public_path(Storage::url('UserIcon')).'/'.$icon ) )
         {
-            return asset(Storage::url('UserPhoto').'/'.$icon);
+            return asset(Storage::url('UserIcon').'/'.$icon);
         }
         else
         {
-            return asset(Storage::url('UserPhoto').'/default.png');
+            return asset(Storage::url('UserIcon').'/default.png');
         }
     }
 }

@@ -53,7 +53,7 @@ class Product extends Model
             $data['storeId'] = $store->id;
             $data['storeName'] = $store->rUser == null?null:$store->rUser->nickname;
             $data['nStoreFollow'] = $store->nTotalFollow;
-            $data['storeThumbnail'] = asset('StorePhoto').'/'.$store->rThumbnail->filename;
+            $data['storeThumbnail'] = $store->rUser->cIcon;
 
             $isFollow = auth()->user()->rStoreFollow()->where('store_id',$store->id)->first();
             $data['isFollow'] = $isFollow != null?1:0;
