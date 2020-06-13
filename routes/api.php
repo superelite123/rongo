@@ -49,5 +49,10 @@ $api->version('v1', function (Router $api) {
          */
         $api->get('stores','App\\Api\\V1\\Controllers\\StoreController@index');
         $api->get('store/{id}','App\\Api\\V1\\Controllers\\StoreController@show');
+        /**
+         * Search
+         */
+        $api->post('search','App\\Api\\V1\\Controllers\\SearchController@index');
+        $api->get('search/logs','App\\Api\\V1\\Controllers\\SearchController@logs');
     });
 });

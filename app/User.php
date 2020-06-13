@@ -68,6 +68,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(StoreUserFollow::class,'user_id');
     }
 
+    public function rSearchLog()
+    {
+        return $this->hasMany(SearchLog::class,'user_id');
+    }
+
     public function getcIconAttribute()
     {
         $icon =  $this->icon != null || $this->icon == ''?$this->icon:'default.png';

@@ -14,20 +14,7 @@ class StoreController extends Controller
      */
     public function index()
     {
-        $response = ['stores' => []];
-        $stores = Store::all();
-        foreach($stores as $store)
-        {
-            $item = [];
-            $item['id'] = $store->id;
-            $item['name'] = $store->rUser->nickname;
-            $item['nTotalFollows'] = $store->nTotalFollows;
-            $item['icon'] = $store->rUser->cIcon;
-
-            $response['stores'][] = $item;
-        }
-
-        return response()->json($response);
+        return response()->json($this->loadStores([]));
     }
 
     /**

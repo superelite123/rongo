@@ -58,6 +58,7 @@ class Store extends Model
         $data = $this->rEvaluation()
                     ->select('type', DB::raw('count(*) as total'))
                     ->groupBy('type')->get();
+
         return $data;
     }
 

@@ -25,10 +25,6 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $options['type'] = $request->type;
-        $options['status'] = [];
-        $options['status'][0] = Config::get('constants.pStatus.staged');
-        $options['status'][1] = Config::get('constants.pStatus.restaged');
-        $options['status'][2] = Config::get('constants.pStatus.sold');
         return response()->json($this->loadProducts($options));
     }
 

@@ -21,7 +21,7 @@ class LiveController extends WowzaController
      */
     public function index()
     {
-        return response()->json($this->loadLives(['store_id' => -1]));
+        return response()->json($this->loadLives([]));
     }
 
     /**
@@ -107,7 +107,7 @@ class LiveController extends WowzaController
     {
         $response = [];
         $live = Live::find($id);
-        $response = $this->toArray($live);
+        $response = $this->liveToArray($live);
         $response['nViewer'] = $this->getUsageLiveStream($live->stream_target_id)['stream_target']['unique_viewers'];
         $response['evaluation'] = $live->rEvaluation()->count();
         $response['seller'] = [];

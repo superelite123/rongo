@@ -1,16 +1,22 @@
 <?php
 namespace App\Traits;
 
-use App\Product;
 use Storage;
 use DB;
+use App\Product;
 use App\Live;
+use App\Store;
 use App\Helper\CommonFunction;
+use Config;
 trait LoadList
 {
     use CommonFunction;
     public function loadProducts($options)
     {
+        $options['status'] = [];
+        $options['status'][0] = Config::get('constants.pStatus.staged');
+        $options['status'][1] = Config::get('constants.pStatus.restaged');
+        $options['status'][2] = Config::get('constants.pStatus.sold');
         $cond = Product::select('products.*',
                         DB::raw('IF(product_user_like.user_id = '.auth()->user()->id.',1,0) as isLike'),
                         'product_portfolio.filename','product_portfolio.order')
@@ -21,9 +27,17 @@ trait LoadList
         {
             $cond = $cond->where('products.store_id',$options['store_id']);
         }
-        if($options['type'] == 2)
+        if(isset($options['type']))
         {
-            $cond = $cond->where('product_user_like.user_id',auth()->user()->id);
+            if($options['type'] == 2)
+            {
+                $cond = $cond->where('product_user_like.user_id',auth()->user()->id);
+            }
+        }
+
+        if(isset($options['keyword']))
+        {
+            $cond = $cond->where('label','like','%'.$options['keyword'].'%');
         }
 
         $products = $cond->get();
@@ -61,20 +75,48 @@ trait LoadList
     public function loadLives($options)
     {
         $json = [];
-        if($options['store_id'] == -1)
+        $cond = Live::where('id','>',-1);
+        if(isset($options['store_id']))
         {
-            $lives = Live::all();
-        }
-        else
-        {
-            $lives = Live::where('store_id',$options['store_id'])->orderBy('created_at','desc')->get();
+            $cond = $cond->where('store_id',$options['store_id']);
         }
 
+        if(isset($options['keyword']))
+        {
+            $cond = $cond->where('title','like','%'.$options['keyword'].'%');
+        }
+        $lives = $cond->orderBy('created_at','desc')->get();
         foreach($lives as $live)
         {
             $json[] = $this->liveToArray($live);
         }
         return $json;
+    }
+
+    public function loadStores($options)
+    {
+        $response = [];
+        $cond = Store::where('id','>',-1);
+        if(isset($options['keyword']))
+        {
+            $cond = $cond->whereHas('rUser',function($query) use($options){
+                $query->where('nickname','like','%'.$options['keyword'].'%');
+            });
+        }
+
+        $stores = $cond->get();
+        foreach($stores as $store)
+        {
+            $item = [];
+            $item['id'] = $store->id;
+            $item['name'] = $store->rUser->nickname;
+            $item['nTotalFollows'] = $store->nTotalFollows;
+            $item['icon'] = $store->rUser->cIcon;
+
+            $response[] = $item;
+        }
+
+        return $response;
     }
 
     public function liveToArray(Live $live)

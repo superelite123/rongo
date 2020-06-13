@@ -15,6 +15,8 @@ class CreateSearchLogTable extends Migration
     {
         Schema::create('search_log', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->string('keyword');
             $table->timestamps();
         });
     }
