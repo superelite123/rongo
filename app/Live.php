@@ -27,6 +27,11 @@ class Live extends Model
         return $this->hasMany(LiveHasUser::class,'live_id');
     }
 
+    public function rEvaluation()
+    {
+        return $this->hasMany(LiveEvaluation::class,'live_id');
+    }
+
     public function getnTotalUsersAttribute()
     {
         return $this->rUsers()->count();

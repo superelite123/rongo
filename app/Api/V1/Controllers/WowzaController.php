@@ -34,8 +34,9 @@ class WowzaController extends Controller
      * Create Live
      */
 
-    public function createLiveStream()
+    public function createLiveStream($title = 'RongoDefaultLiveStream')
     {
+        $this->config['name'] = $title;
         $this->endPoint = 'live_streams';
         $response = $this->getHttpRequest()->post($this->getURL(),$this->config);
         return $response;
@@ -56,6 +57,12 @@ class WowzaController extends Controller
     public function publishLiveStream($streamID)
     {
 
+    }
+    public function getUsageLiveStream($streamID)
+    {
+        $this->endPoint = 'usage/stream_targets/'.$streamID.'/live';
+        $response = $this->getHttpRequest()->get($this->getURL());
+        return json_decode($response,true);
     }
     public function getStateLiveStream($streamID)
     {

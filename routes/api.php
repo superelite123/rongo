@@ -37,7 +37,7 @@ $api->version('v1', function (Router $api) {
          * Live
          */
         $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
-        $api->post('live/create', 'App\\Api\\V1\\Controllers\\LiveController@create');
+        $api->post('live/create', 'App\\Api\\V1\\Controllers\\LiveController@create')->middleware('checklivecreator');
         $api->get('live/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
         $api->get('live/start/{id}', 'App\\Api\\V1\\Controllers\\LiveController@start');
         $api->get('live/publish/{id}', 'App\\Api\\V1\\Controllers\\LiveController@publish');

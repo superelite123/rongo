@@ -9,22 +9,19 @@ use Carbon\Carbon;
 //Load Model
 use App\User;
 use App\Live;
+use GetStream\StreamChat\Client;
+use Config;
+use App\Traits\LoadList;
 class LiveController extends WowzaController
 {
+    use LoadList;
     /**
      * 2019.6.6
      * Live listing
      */
     public function index()
     {
-        $json = ['lives' => []];
-
-        $lives = Live::all();
-        foreach($lives as $live)
-        {
-            $json['lives'][] = $this->toArray($live);
-        }
-        return response()->json($json);
+        return response()->json($this->loadLives(['store_id' => -1]));
     }
 
     /**
@@ -34,7 +31,53 @@ class LiveController extends WowzaController
      */
     public function create(Request $request)
     {
-        return $this->createLiveStream();
+        $user = auth()->user();
+        $response = [
+            'success' => 1,
+            'cid' => null,
+            'cadmin_id' => null
+        ];
+
+        //Create LiveStream
+        //$liveStreamReponse = json_decode($this->createLiveStream($request->title));
+        $liveStreamReponse = ['id' => '23232df',
+                              'player_hls_playback_url' => 'https://cdn3.wowza.com/1/dlFQWTU5eW5uUGIx/NWtYMlFt/hls/live/playlist.m3u8'];
+
+        /**
+         * Create Chat Channel
+         */
+        $client = new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
+        //Channel ID
+        $cid = uniqid();
+        $cadmin = [
+            'id' => $user->chat_id,
+            'role' => 'admin',
+            'name' => 'admin',
+        ];
+        $client->updateUser($cadmin);
+        $channelConfig = ['name' => $request->title];
+        // Instantiate a livestream type channel with id homeShopping
+        $channel = $client->Channel("livestream", $cid, $channelConfig);
+        // Create the channel
+        $state = $channel->create($cadmin['id']);
+        //Create Live
+        $live = new Live;
+        $live->photo        = '2.png';
+        $live->title        = $request->title;
+        $live->store_id     = $user->rStore->id;
+        $live->tag_id       = $this->registerTag($request->tag);
+        $live->status_id    = 1;
+        $live->stream_id    = $liveStreamReponse['id'];
+        $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
+        $live->cid          = $cid;
+        $live->cadmin_id    = $cadmin['id'];
+        $live->save();
+
+        $response['id']         = $live->id;
+        $response['cid']        = $live->cid;
+        $response['cadmin_id']  = $live->cadmin_id;
+
+        return response()->json($response);
     }
 
     public function start($id)
@@ -62,29 +105,24 @@ class LiveController extends WowzaController
     }
     public function view($id)
     {
-        return response()->json($this->toArray(Live::find($id)));
+        $response = [];
+        $live = Live::find($id);
+        $response = $this->toArray($live);
+        $response['nViewer'] = $this->getUsageLiveStream($live->stream_target_id)['stream_target']['unique_viewers'];
+        $response['evaluation'] = $live->rEvaluation()->count();
+        $response['seller'] = [];
+        $seller = $live->rStore->rUser;
+        $response['seller']['name'] = $seller->nickname;
+        $response['seller']['icon'] = $seller->cIcon;
+        return response()->json( $response );
+    }
+    public function createChatClient()
+    {
+        return new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
     }
     public function getThumbnail($id)
     {
 
     }
-    public static function toArray(Live $live)
-    {
-        $item = [];
-        if($live != null)
-        {
-            $item['id']             = $live->id;
-            $item['title']          = $live->title;
-            $item['tag']            = $live->rTag->label;
-            $item['nTotalUsers']    = $live->nTotalUsers;
-            $item['thumbnail']      = asset(Storage::url('LivePhoto')).'/'.$live->photo;
-            $item['status']         = $live->status_id;
-            $item['hls_url']        = $live->hls_url;
-            $item['date']           = $live->created_at->format('Y-m-d');
-        }else{
-            $item = null;
-        }
 
-        return $item;
-    }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStoreUserEvaluationTable extends Migration
+class CreateStoreExplationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateStoreUserEvaluationTable extends Migration
      */
     public function up()
     {
-        Schema::create('store_evaluation', function (Blueprint $table) {
+        Schema::create('store_explantion', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
             $table->integer('store_id');
-            $table->tinyInteger('type')->default(0);
-            $table->unique(['user_id','store_id']);
+            $table->string('filename');
+            $table->tinyInteger('order')->default(1);
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateStoreUserEvaluationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('store_evaluation');
+        Schema::dropIfExists('store_explation');
     }
 }

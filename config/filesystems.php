@@ -57,9 +57,14 @@ return [
             'root'   => storage_path('app/public/ProductPortfolio'),
             'visibility' => 'public',
         ],
-        'store_portfolio' => [
+        'store_background' => [
             'driver' => 'local',
-            'root'   => storage_path('app/public/StorePhoto'),
+            'root'   => storage_path('app/public/StoreBackground'),
+            'visibility' => 'public',
+        ],
+        'store_explantion' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/public/StoreExplantion'),
             'visibility' => 'public',
         ],
         'user_icon' => [
