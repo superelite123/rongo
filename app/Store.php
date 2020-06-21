@@ -42,11 +42,6 @@ class Store extends Model
         return $this->rUsersFollow()->where('type',1)->count();
     }
 
-    public function getnTotalFollowsAttribute()
-    {
-        return $this->rUsersFollow()->count();
-    }
-
     public function getBackgroundAttribute()
     {
         $background = $this->rBackground()->where('order',1)->first();

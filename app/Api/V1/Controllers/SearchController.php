@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Store;
 use App\Traits\LoadList;
 use App\SearchLog;
+use App\Notifications\AccountActivated;
 use Config;
 class SearchController extends Controller
 {
@@ -46,6 +47,7 @@ class SearchController extends Controller
 
     public function logs()
     {
+        auth()->user()->notify(new AccountActivated);
         return response()->json(auth()->user()->rSearchLog()->select('keyword')->get());
     }
 }

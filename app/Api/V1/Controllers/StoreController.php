@@ -48,21 +48,4 @@ class StoreController extends Controller
 
         return response()->json( $response );
     }
-
-    public function toArray(Store $store)
-    {
-        $item = [];
-        if($live != null)
-        {
-            $item = [];
-            $item['id'] = $store->id;
-            $item['description'] = $store->description;
-            $item['nTotalFollows'] = $store->nTotalFollows;
-            $item['thumbnail'] = '';
-        }else{
-            $item = null;
-        }
-
-        return $item;
-    }
 }

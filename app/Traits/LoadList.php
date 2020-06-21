@@ -110,7 +110,7 @@ trait LoadList
             $item = [];
             $item['id'] = $store->id;
             $item['name'] = $store->rUser->nickname;
-            $item['nTotalFollows'] = $store->nTotalFollows;
+            $item['nTotalFollows'] = $store->nTotalFollow;
             $item['icon'] = $store->rUser->cIcon;
 
             $response[] = $item;
@@ -134,6 +134,23 @@ trait LoadList
             $item['date']           = $live->created_at->format('Y-m-d');
             $item['cid']            = $live->cid;
             $item['cadmin_id']      = $live->cadmin_id;
+        }else{
+            $item = null;
+        }
+
+        return $item;
+    }
+
+    public function StoretoArray(Store $store)
+    {
+        $item = [];
+        if($store != null)
+        {
+            $item = [];
+            $item['id'] = $store->id;
+            $item['description'] = $store->description;
+            $item['nTotalFollows'] = $store->nTotalFollow;
+            $item['icon'] = $store->rUser->cIcon;
         }else{
             $item = null;
         }

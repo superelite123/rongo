@@ -22,7 +22,6 @@ $api->version('v1', function (Router $api) {
         $api->post('register/customer', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@register');
         $api->post('login/customer', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@login');
         $api->post('login/customer/newDevice', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@newDevice');
-        $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
     });
 
     //Authorizationed Zone
@@ -32,7 +31,7 @@ $api->version('v1', function (Router $api) {
          */
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
-        $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@like');
+        $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@addLikeProduct');
         /**
          * Live
          */
@@ -54,5 +53,27 @@ $api->version('v1', function (Router $api) {
          */
         $api->post('search','App\\Api\\V1\\Controllers\\SearchController@index');
         $api->get('search/logs','App\\Api\\V1\\Controllers\\SearchController@logs');
+    });
+    /**
+     * User Detail
+     */
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'me'], function(Router $api) {
+        $api->get('/','App\\Api\\V1\\Controllers\\UserController@show');
+        $api->get('likeProducts','App\\Api\\V1\\Controllers\\ProductLikeController@index');
+        $api->get('show','App\\Api\\V1\\Controllers\\UserController@show');
+        $api->post('store','App\\Api\\V1\\Controllers\\UserController@store');
+        $api->post('uploadPhoto','App\\Api\\V1\\Controllers\\UserController@uploadPhoto');
+    });
+    /**
+     * Address
+     */
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'address'], function(Router $api) {
+        $api->get('show/{id}','App\\Api\\V1\\Controllers\\AddressController@show');
+        $api->get('store','App\\Api\\V1\\Controllers\\AddressController@store');
+        $api->get('deliveryAddress','App\\Api\\V1\\Controllers\\UserAddressController@index');
+    });
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'storeFollow'], function(Router $api) {
+        $api->get('/{type}','App\\Api\\V1\\Controllers\\StoreFollowController@index');
+        $api->post('follow','App\\Api\\V1\\Controllers\\StoreFollowController@follow');
     });
 });

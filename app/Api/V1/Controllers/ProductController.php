@@ -61,7 +61,7 @@ class ProductController extends Controller
         return response()->json(['product' => $response]);
     }
 
-    public function like(Request $request){
+    public function addLikeProduct(Request $request){
 
         $product = Product::find($request->product_id);
 

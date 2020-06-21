@@ -47,7 +47,9 @@ class LoginCustomerController extends AuthController
     }
     /**
      * Reister Customer
-     * @param:NickName,UUID
+     *
+     * @param:nickname,uuid
+     *
      * @response:
      *  Success
      *  1:success
@@ -69,6 +71,8 @@ class LoginCustomerController extends AuthController
         $newUser->nickname = $request->nickname;
         $newUser->password = bcrypt(' ');
         $newUser->type = 2;
+        $newUser->chat_id = uniqid();
+        $newUser->fcm_token = $request->fcm_token;
         //check Device Duplicate
         $aDevice = DeviceUser::where('device',$request->uuid)->first();
         if($aDevice != null)
@@ -76,6 +80,7 @@ class LoginCustomerController extends AuthController
             $response['success'] = -2;
         }else{
             $newUser->save();
+            $response['chat_user_id'] = $newUser->chat_id;
             $newUser->rDevice()->saveMany([
                 new DeviceUser(['device' => $request->uuid])
             ]);
@@ -106,6 +111,7 @@ class LoginCustomerController extends AuthController
             {
                 $response['success'] = 0;
             }else{
+                $response['chat_user_id'] = $user->chat_id;
                 $response['token'] = $this->responseToken(
                                         JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(7)->timestamp])
                                      );
@@ -148,6 +154,9 @@ class LoginCustomerController extends AuthController
                     $user->rDevice()->saveMany([
                         new DeviceUser(['device' => $request->uuid])
                     ]);
+                    $user->fcm_token = $request->fcm_token;
+                    $user->save();
+                    $response['chat_user_id'] = $user->chat_user_id;
                 }
                 $response['token'] = $this->responseToken(
                     JWTAuth::fromUser($user[0],['exp' => Carbon::now()->addDays(7)->timestamp])

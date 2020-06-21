@@ -71,6 +71,7 @@ return [
             'driver' => 'local',
             'root'   => storage_path('app/public/UserIcon'),
             'visibility' => 'public',
+            'url' => env('APP_URL').'/storage',
         ],
         'public' => [
             'driver' => 'local',

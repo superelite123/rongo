@@ -35,7 +35,16 @@ class Product extends Model
 
     public function Thumbnail()
     {
-        return $this->rPortfolio()->where('order','=', 1);
+        $thumanail = $this->rPortfolio()->where('order','=', 1)->first();
+        if($thumanail != null)
+        {
+            return $thumanail->filename;
+        }
+        else
+        {
+            $thumanail = $this->rPortfolio()->first();
+            return $thumanail != null?$thumanail->filename:'default.png';
+        }
     }
 
     public function rStore()

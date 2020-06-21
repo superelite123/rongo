@@ -17,7 +17,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'nickname', 'email', 'password',
+        'nickname', 'email', 'password','address_id','firstname_h','lastname_h','firstname_k',
+        'lastname_k','phone_number','photo'
     ];
 
     /**
@@ -73,6 +74,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(SearchLog::class,'user_id');
     }
 
+    public function rHasAddress()
+    {
+        return $this->hasMany(UserHasAddress::class,'user_id');
+    }
+
     public function getcIconAttribute()
     {
         $icon =  $this->icon != null || $this->icon == ''?$this->icon:'default.png';
@@ -84,5 +90,15 @@ class User extends Authenticatable implements JWTSubject
         {
             return asset(Storage::url('UserIcon').'/default.png');
         }
+    }
+
+    /**
+     * Specifies the user's FCM token
+     *
+     * @return string
+     */
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
     }
 }
