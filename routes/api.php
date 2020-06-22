@@ -76,4 +76,10 @@ $api->version('v1', function (Router $api) {
         $api->get('/{type}','App\\Api\\V1\\Controllers\\StoreFollowController@index');
         $api->post('follow','App\\Api\\V1\\Controllers\\StoreFollowController@follow');
     });
+    /**
+     * Payment
+     */
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'payment'], function(Router $api) {
+        $api->get('card/','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
+    });
 });
