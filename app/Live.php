@@ -32,6 +32,11 @@ class Live extends Model
         return $this->hasMany(LiveEvaluation::class,'live_id');
     }
 
+    public function rProducts()
+    {
+        return $this->hasMany(LiveHasProduct::class,'product_id');
+    }
+
     public function getnTotalUsersAttribute()
     {
         return $this->rUsers()->count();

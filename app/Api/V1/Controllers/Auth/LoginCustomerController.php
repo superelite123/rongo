@@ -146,8 +146,10 @@ class LoginCustomerController extends AuthController
                 $aDevice = $user->rDevice()->where('device',$request->uuid)->first();
                 if($aDevice != null)
                 {
+                    //Other User already use this device
                     if($aDevice->user_id != $user->id)
                         $response['success'] = -2;
+                    //this device already registered
                     else
                         $response['success'] = -3;
                 }else{

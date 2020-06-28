@@ -43,6 +43,7 @@ $api->version('v1', function (Router $api) {
         $api->get('live/stop/{id}', 'App\\Api\\V1\\Controllers\\LiveController@stop');
         $api->get('live/state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
         $api->get('live/view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
+        $api->get('live/products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@produts');
         /**
          * Store
          */
@@ -63,6 +64,7 @@ $api->version('v1', function (Router $api) {
         $api->get('show','App\\Api\\V1\\Controllers\\UserController@show');
         $api->post('store','App\\Api\\V1\\Controllers\\UserController@store');
         $api->post('uploadPhoto','App\\Api\\V1\\Controllers\\UserController@uploadPhoto');
+        $api->post('updateEmail','App\\Api\\V1\\Controllers\\UserController@updateEmail');
     });
     /**
      * Address

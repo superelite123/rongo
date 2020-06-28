@@ -57,7 +57,7 @@ $dh = opendir(LOG4PHP_DIR) or die(LOG4PHP_DIR . " is not a valid directory.");
  *  クラスをロードする
  ******************************************************************************/
 require_once(MDK_LIB_DIR . DS . 'TGMDK_ErrorMessage.php');
-require_once(MDK_LIB_DIR . DS . 'TGMDK_Logger.php');
+//require_once(MDK_LIB_DIR . DS . 'TGMDK_Logger.php');
 require_once(MDK_LIB_DIR . DS . 'TGMDK_Exception.php');
 require_once(MDK_LIB_DIR . DS . 'TGMDK_AuthHashUtil.php');
 require_once(MDK_LIB_DIR . DS . 'TGMDK_Config.php');

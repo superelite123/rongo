@@ -27,10 +27,35 @@ class UserController extends Controller
     {
         $id = $request->id == 0?auth()->user()->id:$request->id;
         $user = User::find($id);
-        $address = Address::create($request->address);
-        $userInfo = $request->userInfo;
-        $userInfo['address_id'] = $address->id;
-        $user->update($request->userInfo);
+
+        $address = $user->rAddress != null ? $user->rAddress : new Address;
+        $addreess->state_id = $request->state_id;
+        $addreess->county = $request->county;
+        $addreess->street = $request->street;
+        $addreess->house_number = $request->house_number;
+        $addreess->postal_code = $request->postal_code;
+        $address->save();
+
+        //save user info
+        $user->address_id = $address->id;
+        $user->firstname_h = $request->firstname_h;
+        $user->lastname_h = $request->lastname_h;
+        $user->firstname_k = $request->firstname_k;
+        $user->lastname_k = $request->lastname_k;
+        $user->nickname = $request->nickname;
+        $user->gender = $request->gender;
+        $user->email = $request->email;
+        $user->phone_number = $request->phone_number;
+        $user->save();
+
+        if($request->hasFile('icon'))
+        {
+            $req = new Request;
+            $req->image = $request->icon;
+            $this->uploadPhoto($req);
+        }
+
+        return response()->json(auth()->user());
     }
     /**
      * 6.17
@@ -82,11 +107,31 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $response = ['success' => 1];
-        $data = $request->except(['icon']);
-        auth()->user()->update($data);
+
+        $data = $request->except(['icon','address']);
+
+        //save user info
+        $user = auth()->user();
+        $user->update($data);
+        //save address
+        $address = $user->rAddress != null?$user->rAddress:new Address;
+        $address->update($request->address);
+        $user->address_id = $address->id;
+        //save icon
         $req = new Request;
         $req->image = $request->icon;
         $this->uploadPhoto($req);
+
+        $response['user'] = $user;
+        return response()->json($response);
+    }
+    public function updateEmail(Request $request)
+    {
+        $response = ['success' => 1];
+        $user = auth()->user();
+        $user->email = $request->email;
+        $user->save();
+        $response['email'] = $user->email;
         return response()->json($response);
     }
     public function toArray(User $user)

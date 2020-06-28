@@ -112,6 +112,16 @@ class LiveController extends WowzaController
     {
         return $this->fetchLiveStream(Live::find($id)->stream_id);
     }
+    public function produts($id)
+    {
+        $response = [];
+        $products = Live::find($id)->rProducts;
+        foreach($products as $product)
+        {
+            $response[] = $this->proucttoArray($product->rProduct);
+        }
+        return response()->json($response);
+    }
     public function view($id)
     {
         $response = [];

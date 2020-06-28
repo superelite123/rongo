@@ -157,4 +157,23 @@ trait LoadList
 
         return $item;
     }
+
+    public function proucttoArray(Product $product)
+    {
+        $item = [];
+        if($product != null)
+        {
+            $item['id'] = $product->id;
+            $item['label'] = $product->label;
+            $item['price'] = $product->price;
+            $item['status_id'] = $product->status_id;
+            $item['thumbnail'] = $product->Thumbnail();
+            $item['number'] = $product->number;
+        }
+        else
+        {
+            $item = null;
+        }
+        return $item;
+    }
 }

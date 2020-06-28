@@ -78,7 +78,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(UserHasAddress::class,'user_id');
     }
-
+    public function rAddress()
+    {
+        return $this->belongsTo(Address::class,'address_id');
+    }
     public function getcIconAttribute()
     {
         $icon =  $this->icon != null || $this->icon == ''?$this->icon:'default.png';
