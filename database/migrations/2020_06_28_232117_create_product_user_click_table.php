@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNewsTable extends Migration
+class CreateProductUserClickTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateNewsTable extends Migration
      */
     public function up()
     {
-        Schema::create('news', function (Blueprint $table) {
+        Schema::create('product_user_click', function (Blueprint $table) {
             $table->id();
-            $table->integer('receiver')->default(0);
-            $table->string('title');
-            $table->string('body');
+            $table->integer('user_id');
+            $table->integer('product_id');
+            $table->unique(['user_id','product_id']);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateNewsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('news');
+        Schema::dropIfExists('product_user_click');
     }
 }

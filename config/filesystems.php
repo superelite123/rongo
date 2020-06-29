@@ -73,6 +73,12 @@ return [
             'visibility' => 'public',
             'url' => env('APP_URL').'/storage',
         ],
+        'notify_icon' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/public/NotifyIcon'),
+            'visibility' => 'public',
+            'url' => env('APP_URL').'/storage',
+        ],
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -32,6 +32,7 @@ $api->version('v1', function (Router $api) {
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
         $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@addLikeProduct');
+        $api->post('product/click', 'App\\Api\\V1\\Controllers\\ProductClickController@store');
         /**
          * Live
          */
@@ -83,5 +84,17 @@ $api->version('v1', function (Router $api) {
      */
     $api->group(['middleware' => 'jwt.auth','prefix' => 'payment'], function(Router $api) {
         $api->get('card/','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
+    });
+    /**
+     * Notification
+     */
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'notification'], function(Router $api) {
+        $api->get('/','App\\Api\\V1\\Controllers\\NotificationController@index');
+    });
+    /**
+     * News
+     */
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'news'], function(Router $api) {
+        $api->get('/','App\\Api\\V1\\Controllers\\NewsController@index');
     });
 });

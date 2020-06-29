@@ -6,6 +6,8 @@ use DB;
 use App\Product;
 use App\Live;
 use App\Store;
+use App\Notification;
+use App\News;
 use App\Helper\CommonFunction;
 use Config;
 trait LoadList
@@ -174,6 +176,35 @@ trait LoadList
         {
             $item = null;
         }
+        return $item;
+    }
+
+    public function notificationtoArray(Notification $notification)
+    {
+        $item = [];
+        if($notification != null)
+        {
+            $item['id'] = $notification->id;
+            $item['icon'] = asset(Storage::url('NotifyIcon')).'/'.$notification->icon;
+            $item['title'] = $notification->title;
+            $item['body'] = $notification->body;
+            $item['date'] = $notification->created_at->format('Y/m/d H:i');
+        }
+
+        return $item;
+    }
+
+    public function newstoArray(News $news)
+    {
+        $item = [];
+        if($news != null)
+        {
+            $item['id']     = $news->id;
+            $item['title']  = $news->title;
+            $item['body']   = $news->body;
+            $item['date']   = $news->created_at->format('Y/m/d H:i');
+        }
+
         return $item;
     }
 }
