@@ -1,4 +1,5 @@
 <?php
+namespace App\libraries\tgMdk\Lib\tgMdkDto;
 
 
 /**

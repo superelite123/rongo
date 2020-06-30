@@ -75,7 +75,7 @@ class UserController extends Controller
         $file = Storage::disk('user_icon')->putFileAs('',$file,$user->id.'.png');
         $path = asset(Storage::url('UserIcon')).'/'.$file;
         $user->icon = $file;
-
+        $user->save();
         return response()->json(['path' => $path]);
     }
     /**
@@ -114,9 +114,19 @@ class UserController extends Controller
         $user = auth()->user();
         $user->update($data);
         //save address
-        $address = $user->rAddress != null?$user->rAddress:new Address;
-        $address->update($request->address);
+        if($user->rAddress != null)
+        {
+            $address = $user->rAddress;
+            $address->update($request->address);
+            $address->save();
+        }
+        else
+        {
+            $address = new Address($request->address);
+            $address->save();
+        }
         $user->address_id = $address->id;
+        $user->save();
         //save icon
         $req = new Request;
         $req->image = $request->icon;

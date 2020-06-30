@@ -1,4 +1,6 @@
 <?php
+namespace App\libraries\tgMdk\Lib\log4php;
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -20,7 +22,7 @@
 
 /**
  * Extend this abstract class to create your own log layout format.
- *	
+ *
  * @version $Revision: 1213283 $
  * @package log4php
  */
@@ -41,23 +43,23 @@ abstract class LoggerLayout extends LoggerConfigurable {
 	 */
 	public function format(LoggerLoggingEvent $event) {
 		return $event->getRenderedMessage();
-	} 
-	
+	}
+
 	/**
 	 * Returns the content type output by this layout.
 	 * @return string
 	 */
 	public function getContentType() {
 		return "text/plain";
-	} 
-			
+	}
+
 	/**
 	 * Returns the footer for the layout format.
 	 * @return string
 	 */
 	public function getFooter() {
 		return null;
-	} 
+	}
 
 	/**
 	 * Returns the header for the layout format.
@@ -66,7 +68,7 @@ abstract class LoggerLayout extends LoggerConfigurable {
 	public function getHeader() {
 		return null;
 	}
-	
+
 	/** Triggers a warning for this layout with the given message. */
 	protected function warn($message) {
 		trigger_error("log4php: [" . get_class($this) . "]: $message", E_USER_WARNING);

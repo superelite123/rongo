@@ -1,4 +1,5 @@
 <?php
+namespace App\libraries\tgMdk\Lib\log4php;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -38,19 +39,19 @@ class LoggerRoot extends Logger {
 			$level = LoggerLevel::getLevelAll();
 		}
 		$this->setLevel($level);
-	} 
-	
+	}
+
 	/**
 	 * @return LoggerLevel the level
 	 */
 	public function getEffectiveLevel() {
 		return $this->getLevel();
 	}
-	
+
 	/**
-	 * Override level setter to prevent setting the root logger's level to 
+	 * Override level setter to prevent setting the root logger's level to
 	 * null. Root logger must always have a level.
-	 * 
+	 *
 	 * @param LoggerLevel $level
 	 */
 	public function setLevel(LoggerLevel $level = null) {
@@ -60,7 +61,7 @@ class LoggerRoot extends Logger {
 			trigger_error("log4php: Cannot set LoggerRoot level to null.", E_USER_WARNING);
 		}
 	}
-	
+
 	/**
 	 * Override parent setter. Root logger cannot have a parent.
 	 * @param Logger $parent

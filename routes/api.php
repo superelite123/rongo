@@ -33,6 +33,7 @@ $api->version('v1', function (Router $api) {
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
         $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@addLikeProduct');
         $api->post('product/click', 'App\\Api\\V1\\Controllers\\ProductClickController@store');
+        $api->get('products/ranking', 'App\\Api\\V1\\Controllers\\ProductController@rankings');
         /**
          * Live
          */
@@ -73,7 +74,8 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => 'jwt.auth','prefix' => 'address'], function(Router $api) {
         $api->get('show/{id}','App\\Api\\V1\\Controllers\\AddressController@show');
         $api->get('store','App\\Api\\V1\\Controllers\\AddressController@store');
-        $api->get('deliveryAddress','App\\Api\\V1\\Controllers\\UserAddressController@index');
+        $api->get('dAddresses','App\\Api\\V1\\Controllers\\DAddressController@index');
+        $api->post('dAddress','App\\Api\\V1\\Controllers\\DAddressController@store');
     });
     $api->group(['middleware' => 'jwt.auth','prefix' => 'storeFollow'], function(Router $api) {
         $api->get('/{type}','App\\Api\\V1\\Controllers\\StoreFollowController@index');
@@ -84,6 +86,7 @@ $api->version('v1', function (Router $api) {
      */
     $api->group(['middleware' => 'jwt.auth','prefix' => 'payment'], function(Router $api) {
         $api->get('card/','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
+        $api->post('execute/','App\\Api\\V1\\Controllers\\Payment\\OrderController@execute');
     });
     /**
      * Notification
@@ -96,5 +99,12 @@ $api->version('v1', function (Router $api) {
      */
     $api->group(['middleware' => 'jwt.auth','prefix' => 'news'], function(Router $api) {
         $api->get('/','App\\Api\\V1\\Controllers\\NewsController@index');
+    });
+    /**
+     * Payment
+     */
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'payment'], function(Router $api) {
+        $api->get('cards','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
+        $api->post('add_card','App\\Api\\V1\\Controllers\\Payment\\CardController@store');
     });
 });

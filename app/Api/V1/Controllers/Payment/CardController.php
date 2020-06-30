@@ -3,19 +3,35 @@ namespace App\Api\V1\Controllers\Payment;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Carbon\Carbon;
 use App\Api\V1\Controllers\Controller;
-//use App\libraries\tgMdk\Lib\tgMdkDto\CardAuthorizeRequestDto;
-use App\libraries\tgMdk\Lib\TGMDK_Transaction;
+
+use App\UserCard;
 class CardController extends Controller
 {
     public function index()
     {
-        new TGMDK_Transaction();
+        $response = [];
+        foreach(auth()->user()->rCard as $card)
+        {
+            $response[] = $card->card;
+        }
+
+        return response()->json($response);
     }
 
     public function execOrder(Request $request)
     {
 
+    }
+
+    public function store(Request $request)
+    {
+        $user = auth()->user();
+        $card = $user->rCard()->save(
+            new UserCard([
+                'card' => $request->card,
+            ])
+        );
+        return response()->json($card);
     }
 }

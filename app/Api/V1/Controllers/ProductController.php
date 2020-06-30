@@ -10,6 +10,7 @@ use App\User;
 use App\Product;
 use App\Live;
 use App\ProductUserLike;
+use App\ProductRanking;
 //Config
 use Config;
 use App\Traits\LoadList;
@@ -77,6 +78,18 @@ class ProductController extends Controller
             $bUserLike->delete();
             return response()->json(['like' => 0]);
         }
+    }
+
+    public function rankings()
+    {
+        $rankings = ProductRanking::orderBy('order')->get();
+        $response = [];
+        foreach($rankings as $ranking)
+        {
+            $response[] = $this->proucttoArray($ranking->rProduct);
+        }
+
+        return response()->json($response);
     }
 
     public function store(Request $request)

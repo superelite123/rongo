@@ -19,27 +19,26 @@ trait LoadList
         $options['status'][0] = Config::get('constants.pStatus.staged');
         $options['status'][1] = Config::get('constants.pStatus.restaged');
         $options['status'][2] = Config::get('constants.pStatus.sold');
-        $cond = Product::select('products.*',
-                        DB::raw('IF(product_user_like.user_id = '.auth()->user()->id.',1,0) as isLike'),
-                        'product_portfolio.filename','product_portfolio.order')
-                        ->leftJoin('product_user_like','products.id','=','product_user_like.product_id')
-                        ->leftJoin('product_portfolio','products.id','=','product_portfolio.product_id')
-                        ->whereIn('status_id',$options['status']);
+        $cond = Product::whereIn('status_id',$options['status']);
+        //specify the store
         if(isset($options['store_id']))
         {
-            $cond = $cond->where('products.store_id',$options['store_id']);
+            $cond = $cond->where('store_id',$options['store_id']);
         }
+        //specify product keyword
+        if(isset($options['keyword']))
+        {
+            $cond = $cond->where('label','like','%'.$options['keyword'].'%');
+        }
+        //if type == 2 favourite
         if(isset($options['type']))
         {
             if($options['type'] == 2)
             {
-                $cond = $cond->where('product_user_like.user_id',auth()->user()->id);
+                $cond = $cond->whereHas('rUserLike',function ( $query ) {
+                    $query->where('user_id', auth()->user()->id);
+                });
             }
-        }
-
-        if(isset($options['keyword']))
-        {
-            $cond = $cond->where('label','like','%'.$options['keyword'].'%');
         }
 
         $products = $cond->get();
@@ -47,29 +46,15 @@ trait LoadList
         $json = [];
         foreach($products as $product)
         {
-            $item = [];
-            //already exist?
-            $flag = $this->searchArray('id',$product->id,$json);
-            if($flag != -1)
-            {
-                $item = $json[$flag];
-                $item['thumbnail'] = $product->order == 1?$thumbnailRootUrl.$product->filename:$item['thumbnail'];
-                $item['isLike'] = $product->isLike == 1?1:$item['isLike'];
+            $item['id']         = $product->id;
+            $item['label']      = $product->label;
+            $item['price']      = $product->price;
+            $item['status']     = $product->status_id;
+            $item['isLike']     = $product->rUserLike()->where('user_id',auth()->user()->id)->get()->count() > 0?1:0;
+            $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
+            $item['storeName']  = $product->StoreInfo['storeName'];
 
-                $json[$flag] = $item;
-            }
-            else{
-                $item['id'] = $product->id;
-                $item['label'] = $product->label;
-                $item['price'] = $product->price;
-                $item['status'] = $product->status_id;
-                $item['isLike'] = $product->isLike;
-                $item['thumbnail'] = $product->order == 1?$product->filename:'2.png';
-                $item['thumbnail'] = $thumbnailRootUrl.$item['thumbnail'];
-                $item['storeName'] = $product->StoreInfo['storeName'];
-
-                $json[] = $item;
-            }
+            $json[] = $item;
         }
         return $json;
     }
@@ -169,8 +154,13 @@ trait LoadList
             $item['label'] = $product->label;
             $item['price'] = $product->price;
             $item['status_id'] = $product->status_id;
-            $item['thumbnail'] = $product->Thumbnail();
+            $item['thumbnail'] = asset(Storage::url('ProductPortfolio/').$product->Thumbnail());
             $item['number'] = $product->number;
+            $item['ship_days'] = $product->ship_days;
+            $item['shipper'] = $product->ship_days;
+            $item['storeId'] = $product->store_id;
+            $item['storeName'] = $product->StoreInfo != []?$product->StoreInfo['storeName']:'';
+            $item['storeThumbnail'] = $product->rStore != null?$product->rStore->rUser->cIcon:'';
         }
         else
         {

@@ -1,4 +1,10 @@
 <?php
+namespace App\libraries\tgMdk\Lib\log4php;
+
+use App\libraries\tgMdk\Lib\log4php\renderers\LoggerRendererMap;
+use App\libraries\tgMdk\Lib\log4php\renderers\LoggerRendererException;
+use App\libraries\tgMdk\Lib\log4php\renderers\LoggerRenderer;
+use App\libraries\tgMdk\Lib\log4php\renderers\LoggerRendererDefault;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -20,50 +26,50 @@
 
 /**
  * Pool implmentation for LoggerAppender instances.
- * 
- * The pool is used when configuring log4php. First all appender instances 
- * are created in the pool. Afterward, they are linked to loggers, each 
- * appender can be linked to multiple loggers. This makes sure duplicate 
+ *
+ * The pool is used when configuring log4php. First all appender instances
+ * are created in the pool. Afterward, they are linked to loggers, each
+ * appender can be linked to multiple loggers. This makes sure duplicate
  * appenders are not created.
  *
  * @version $Revision: 1350602 $
  * @package log4php
  */
 class LoggerAppenderPool {
-	
+
 	/** Holds appenders indexed by their name */
 	public static $appenders =  array();
 
 	/**
-	 * Adds an appender to the pool. 
-	 * The appender must be named for this operation. 
+	 * Adds an appender to the pool.
+	 * The appender must be named for this operation.
 	 * @param LoggerAppender $appender
 	 */
 	public static function add(LoggerAppender $appender) {
 		$name = $appender->getName();
-		
+
 		if(empty($name)) {
 			trigger_error('log4php: Cannot add unnamed appender to pool.', E_USER_WARNING);
 			return;
 		}
-		
+
 		if (isset(self::$appenders[$name])) {
 			trigger_error("log4php: Appender [$name] already exists in pool. Overwriting existing appender.", E_USER_WARNING);
 		}
-		
+
 		self::$appenders[$name] = $appender;
 	}
-	
-	/** 
-	 * Retrieves an appender from the pool by name. 
+
+	/**
+	 * Retrieves an appender from the pool by name.
 	 * @param string $name Name of the appender to retrieve.
-	 * @return LoggerAppender The named appender or NULL if no such appender 
+	 * @return LoggerAppender The named appender or NULL if no such appender
 	 *  exists in the pool.
 	 */
 	public static function get($name) {
 		return isset(self::$appenders[$name]) ? self::$appenders[$name] : null;
 	}
-	
+
 	/**
 	* Removes an appender from the pool by name.
 	* @param string $name Name of the appender to remove.
@@ -71,7 +77,7 @@ class LoggerAppenderPool {
 	public static function delete($name) {
 		unset(self::$appenders[$name]);
 	}
-	
+
 	/**
 	 * Returns all appenders from the pool.
 	 * @return array Array of LoggerAppender objects.
@@ -79,7 +85,7 @@ class LoggerAppenderPool {
 	public static function getAppenders() {
 		return self::$appenders;
 	}
-	
+
 	/**
 	 * Checks whether an appender exists in the pool.
 	 * @param string $name Name of the appender to look for.

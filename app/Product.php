@@ -52,6 +52,11 @@ class Product extends Model
         return $this->belongsTo(Store::class,'store_id');
     }
 
+    public function rShipper()
+    {
+        return $this->belongsTo(Shipper::class,'shipper_id');
+    }
+
     public function getStoreInfoAttribute()
     {
         $data = [];
