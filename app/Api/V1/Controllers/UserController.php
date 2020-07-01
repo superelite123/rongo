@@ -95,11 +95,7 @@ class UserController extends Controller
         $response['gender']         = $user->gender;
         $response['email']          = $user->email;
         $response['phone_number']   = $user->phone_number;
-        $response['addresses']      = [];
-        foreach($user->rHasAddress as $keyAddress)
-        {
-            $response['addresses'][] = $keyAddress->rAddress;
-        }
+        $response['addresses']      = $user->rAddress;
 
         return response()->json($response);
     }

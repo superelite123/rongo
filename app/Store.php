@@ -39,7 +39,7 @@ class Store extends Model
 
     public function getnTotalFollowAttribute()
     {
-        return $this->rUsersFollow()->where('type',1)->count();
+        return $this->rUsersFollow()->where('type',1)->get()->count();
     }
 
     public function getBackgroundAttribute()

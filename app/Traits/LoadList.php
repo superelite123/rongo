@@ -152,7 +152,7 @@ trait LoadList
         {
             $item['id'] = $product->id;
             $item['label'] = $product->label;
-            $item['price'] = $product->price;
+            $item['price'] = $product->totalPrice;
             $item['status_id'] = $product->status_id;
             $item['thumbnail'] = asset(Storage::url('ProductPortfolio/').$product->Thumbnail());
             $item['number'] = $product->number;

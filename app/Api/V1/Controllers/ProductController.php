@@ -38,7 +38,7 @@ class ProductController extends Controller
             $response['label'] = $product->label;
             $response['number'] = $product->number;
             $response['description'] = $product->description;
-            $response['price'] = $product->price;
+            $response['price'] = $product->totalPrice;
             $response['nLikes'] = $product->rUserLike()->count();
             $response['isLike'] = $product->IsLike;
             //relatied store

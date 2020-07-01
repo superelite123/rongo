@@ -64,6 +64,7 @@ $api->version('v1', function (Router $api) {
         $api->get('/','App\\Api\\V1\\Controllers\\UserController@show');
         $api->get('likeProducts','App\\Api\\V1\\Controllers\\ProductLikeController@index');
         $api->get('show','App\\Api\\V1\\Controllers\\UserController@show');
+        $api->get('watched_lives','App\\Api\\V1\\Controllers\\LiveController@watchedLives');
         $api->post('store','App\\Api\\V1\\Controllers\\UserController@store');
         $api->post('uploadPhoto','App\\Api\\V1\\Controllers\\UserController@uploadPhoto');
         $api->post('updateEmail','App\\Api\\V1\\Controllers\\UserController@updateEmail');

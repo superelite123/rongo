@@ -49,9 +49,7 @@ class LoginSellerController extends AuthController
      */
     public function login(LoginSellerRequest $request,JWTAuth $JWTAuth)
     {
-        $credentials = $request->only(['email', 'password']);
-
-        $user = User::where(['email' => $request->email,'password' => $request->pwd])->first();
+        $user = User::where(['email' => $request->email])->first();
 
         if($user != null)
         {

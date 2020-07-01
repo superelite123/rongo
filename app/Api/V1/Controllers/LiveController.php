@@ -9,6 +9,7 @@ use Carbon\Carbon;
 //Load Model
 use App\User;
 use App\Live;
+use App\LiveHasUser;
 use GetStream\StreamChat\Client;
 use Config;
 use App\Traits\LoadList;
@@ -144,6 +145,27 @@ class LiveController extends WowzaController
     public function createChatClient()
     {
         return new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
+    }
+    public function watchedLives()
+    {
+        $response = [];
+        $user = auth()->user();
+        $live_ids = LiveHasUser::where('user_id',$user->id)->get();
+        foreach($live_ids as $live_id)
+        {
+            $item = [];
+            $live = $live_id->rLive;
+            $item['id'] = $live->id;
+            $item['title'] = $live->title;
+            $item['tag'] = $live->rTag->label;
+            $item['date'] = $live->created_at->format('Y/m/d');
+            $item['thumbnail'] =  asset(Storage::url('LivePhoto')).'/'.$live->photo;
+            $item['nWatchers'] = $live->nWatchers;
+
+            $response[] = $item;
+        }
+
+        return $response;
     }
     public function getThumbnail($id)
     {

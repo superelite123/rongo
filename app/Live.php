@@ -41,4 +41,12 @@ class Live extends Model
     {
         return $this->rUsers()->count();
     }
+
+    public function getnWatchersAttribute()
+    {
+        $response = ['live' => 0,'replay' => 0];
+        $response['live'] = $this->rUsers()->where('watch_status_id',1)->get()->count();
+        $response['replay'] = $this->rUsers()->where('watch_status_id',2)->get()->count();
+        return $response;
+    }
 }

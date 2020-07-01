@@ -57,6 +57,11 @@ class Product extends Model
         return $this->belongsTo(Shipper::class,'shipper_id');
     }
 
+    public function getTotalPriceAttribute()
+    {
+        return $this->price + $this->delivery_fee;
+    }
+
     public function getStoreInfoAttribute()
     {
         $data = [];
@@ -77,11 +82,7 @@ class Product extends Model
     }
 
     public function getIsLikeAttribute(){
-        $likeUsers = $this->rUserLike;
-        foreach($likeUsers as $user)
-        {
-            return 1;
-        }
-        return 0;
+        $res = $this->rUserLike()->where('user_id',auth()->user()->id)->get();
+        return $res->isNotEmpty()?1:0;
     }
 }
