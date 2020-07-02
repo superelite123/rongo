@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use App\User;
 use App\Live;
 use App\LiveHasUser;
+use App\SMSVerification;
+use Twilio\Rest\Client as TwilloClient;
 use GetStream\StreamChat\Client;
 use Config;
 use App\Traits\LoadList;
@@ -142,6 +144,66 @@ class LiveController extends WowzaController
 
         return response()->json( $response );
     }
+
+    public function register(Request $request)
+    {
+        /**
+         * Save User Data and Verification Data
+         */
+        $user = auth()->user();
+        $user->update($request->all());
+        $code = rand('100000','999999');
+        $smsVerification = $user->rSMSVerification != null?$user->rSMSVerification:new SMSVerification;
+        $smsVerification->user_id = $user->id;
+        $smsVerification->phone_number = $request->phone_number;
+        $smsVerification->code = $code;
+        $smsVerification->expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
+        $smsVerification->save();
+
+        /**
+         * SMSing
+         */
+        $sid = env("TWILIO_SID");
+        $token = env("TWILIO_AUTH_TOKEN");
+        $client = new TwilloClient($sid, $token);
+        $message = $client->messages->create(
+          '15566066441', // Text this number
+          [
+            'from' => '40720308194',
+            'body' => $code
+          ]
+        );
+        return response()->json([
+            'success' => 1
+        ]);
+    }
+
+    public function registerConfirm(Request $request)
+    {
+        /**
+         * 0:success
+         * 1:incorrect code
+         * 2:expired
+         */
+        $response = ['result' => 0 ];
+        $code = $request->code;
+        $smsVerification = $user->rSMSVerification;
+        if($code != $smsVerification->code)
+        {
+            $response['result'] = 1;
+        }
+        else
+        {
+            //expired?
+            if($smsVerification->expiry < Carbon::now())
+            {
+                $response['result'] = 2;
+            }
+        }
+
+        return response()->json($response);
+    }
+
     public function createChatClient()
     {
         return new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));

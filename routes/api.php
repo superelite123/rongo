@@ -46,6 +46,8 @@ $api->version('v1', function (Router $api) {
         $api->get('live/state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
         $api->get('live/view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
         $api->get('live/products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@produts');
+        $api->post('live/register', 'App\\Api\\V1\\Controllers\\LiveController@register');
+        $api->post('live/register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
         /**
          * Store
          */

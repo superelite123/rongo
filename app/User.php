@@ -94,6 +94,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(DAddress::class,'user_id');
     }
+    public function rSMSVerification()
+    {
+        return $this->hasOne(SMSVerification::class,'user_id');
+    }
     public function getcIconAttribute()
     {
         $icon =  $this->icon != null || $this->icon == ''?$this->icon:'default.png';
