@@ -18,6 +18,7 @@ class CreateUserSettingTable extends Migration
             $table->integer('user_id');
             $table->string('key');
             $table->string('value');
+            $table->unique(['user_id','key']);
             $table->timestamps();
         });
     }

@@ -59,7 +59,7 @@ class Product extends Model
 
     public function getTotalPriceAttribute()
     {
-        return $this->price + $this->delivery_fee;
+        return $this->price + $this->shipping_fee;
     }
 
     public function getStoreInfoAttribute()

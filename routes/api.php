@@ -48,6 +48,7 @@ $api->version('v1', function (Router $api) {
         $api->get('live/products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@produts');
         $api->post('live/register', 'App\\Api\\V1\\Controllers\\LiveController@register');
         $api->post('live/register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
+        $api->post('live/add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
         /**
          * Store
          */
@@ -109,5 +110,12 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => 'jwt.auth','prefix' => 'payment'], function(Router $api) {
         $api->get('cards','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
         $api->post('add_card','App\\Api\\V1\\Controllers\\Payment\\CardController@store');
+    });
+    /**
+     * User Setting
+     */
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'user_setting'], function(Router $api) {
+        $api->get('notifications','App\\Api\\V1\\Controllers\\UserSettingController@notifications');
+        $api->post('notification/set','App\\Api\\V1\\Controllers\\UserSettingController@setNotification');
     });
 });

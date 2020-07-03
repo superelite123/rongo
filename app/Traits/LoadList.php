@@ -135,6 +135,7 @@ trait LoadList
         {
             $item = [];
             $item['id'] = $store->id;
+            $item['name'] = $store->rUser->nickname;
             $item['description'] = $store->description;
             $item['nTotalFollows'] = $store->nTotalFollow;
             $item['icon'] = $store->rUser->cIcon;

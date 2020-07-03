@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\User;
 use App\Live;
 use App\LiveHasUser;
+use App\Product;
 use App\SMSVerification;
 use Twilio\Rest\Client as TwilloClient;
 use GetStream\StreamChat\Client;
@@ -233,5 +234,71 @@ class LiveController extends WowzaController
     {
 
     }
+    /**
+     * @param
+     * live_id
+     * product_id
+     * qty
+     * @response
+     * result
+     *  1:success
+     *  2:validation fail
+     * staged Product List
+     */
+    public function addProduct(Request $request)
+    {
+        $response = ['result' => 0,];
 
+        $live = Live::find($request->live_id);
+
+        $product = Product::find($request->product_id);
+        $qty = $request->qty;
+
+        if($qty > $product->qty)
+        {
+            $response['result'] = 1;
+            return response()->json($response);
+        }
+
+        //get LiveHasProduct Object
+        $stagedProduct = $live->rProducts()->where('product_id',$product->id)->first();
+        if($stagedProduct == null)
+        {
+            $stagedProduct = new LiveHasProduct;
+            $stagedProduct->live_id = $live->id;
+            $stagedProduct->product_id = $product->id;
+            $stagedProduct->sold_qty = 0;
+        }
+
+        $stagedProduct->qty += $qty;
+        $stagedProduct->save();
+
+        $product->qty -= $qty;
+        $product->save();
+
+        //Set Status Again
+        $pStatus = Config::get('constants.pStatus');
+        switch($product->status_id)
+        {
+            case $pStatus['added']:
+                $nextStatus = $pStatus['staged'];
+            break;
+            case $pStatus['staged']:
+                $nextStatus = $pStatus['restaged'];
+            break;
+            case $pStatus['sold']:
+                $nextStatus = $pStatus['restaged'];
+            break;
+            default:
+                $nextStatus = $pStatus['staged'];
+            break;
+        }
+        $product->status_id = $nextStatus;
+        $product->save();
+
+        $response['products'] = $this->produts($live->id);
+        return response()->json($response);
+
+
+    }
 }

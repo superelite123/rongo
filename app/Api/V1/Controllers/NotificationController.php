@@ -5,6 +5,10 @@ namespace App\Api\V1\Controllers;
 use Illuminate\Http\Request;
 use App\Notification;
 use App\Traits\LoadList;
+/**
+ * Notification Related
+ */
+use App\Notifications\LikeProductLive;
 class NotificationController extends Controller
 {
     use LoadList;
@@ -18,5 +22,10 @@ class NotificationController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function sendLikeProductLive(Request $request)
+    {
+        auth()->user()->notify(new AccountActivated);
     }
 }

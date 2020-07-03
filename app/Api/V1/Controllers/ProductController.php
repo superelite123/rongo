@@ -41,6 +41,9 @@ class ProductController extends Controller
             $response['price'] = $product->totalPrice;
             $response['nLikes'] = $product->rUserLike()->count();
             $response['isLike'] = $product->IsLike;
+            //Delivery Name
+            $response['shipper'] = $product->rShipper != null?$product->rShipper->name:'';
+            $response['ship_days'] = $product->ship_days;
             //relatied store
             $response = array_merge($response,$product->StoreInfo);
 

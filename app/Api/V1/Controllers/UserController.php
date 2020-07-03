@@ -83,21 +83,7 @@ class UserController extends Controller
      */
     public function show()
     {
-        $user = auth()->user();
-
-        $response = [];
-        $response['icon']           = Storage::disk('user_icon')->exists($user->icon)?asset(Storage::url('UserIcon/'.$user->icon)):null;
-        $response['firstname_h']    = $user->firstname_h;
-        $response['lastname_h']     = $user->lastname_h;
-        $response['firstname_k']    = $user->firstname_k;
-        $response['lastname_k']     = $user->lastname_k;
-        $response['nickname']       = $user->nickname;
-        $response['gender']         = $user->gender;
-        $response['email']          = $user->email;
-        $response['phone_number']   = $user->phone_number;
-        $response['addresses']      = $user->rAddress;
-
-        return response()->json($response);
+        return response()->json($this->toArray(auth()->user()));
     }
 
     public function store(Request $request)
@@ -128,8 +114,7 @@ class UserController extends Controller
         $req->image = $request->icon;
         $this->uploadPhoto($req);
 
-        $response['user'] = $user;
-        return response()->json($response);
+        return response()->json($this->toArray( $user ));
     }
     public function updateEmail(Request $request)
     {
@@ -143,8 +128,18 @@ class UserController extends Controller
     public function toArray(User $user)
     {
         $response = [];
-        $response['id'] = $user->id;
-        $response['name'] = $user->firstname_k;
+
+        $response['icon']           = Storage::disk('user_icon')->exists($user->icon)?asset(Storage::url('UserIcon/'.$user->icon)):null;
+        $response['firstname_h']    = $user->firstname_h;
+        $response['lastname_h']     = $user->lastname_h;
+        $response['firstname_k']    = $user->firstname_k;
+        $response['lastname_k']     = $user->lastname_k;
+        $response['nickname']       = $user->nickname;
+        $response['gender']         = $user->gender;
+        $response['email']          = $user->email;
+        $response['phone_number']   = $user->phone_number;
+        $response['address']        = $user->rAddress;
+
         return $response;
     }
 }
