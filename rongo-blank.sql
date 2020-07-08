@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `stores` (
 CREATE TABLE IF NOT EXISTS `store_background` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `store_id` int(11) NOT NULL,
-  `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `filename` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `order` tinyint(4) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -471,7 +471,7 @@ CREATE TABLE IF NOT EXISTS `store_user_follow` (
 -- Dumping structure for table rongo.tags
 CREATE TABLE IF NOT EXISTS `tags` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `label` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `label` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -483,8 +483,8 @@ CREATE TABLE IF NOT EXISTS `tags` (
 -- Dumping structure for table rongo.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `nickname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nickname` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `firstname_h` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `lastname_h` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -537,7 +537,7 @@ CREATE TABLE IF NOT EXISTS `user_has_address` (
 CREATE TABLE IF NOT EXISTS `user_setting` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
