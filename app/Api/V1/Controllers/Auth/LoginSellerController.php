@@ -6,7 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Api\V1\Requests\LoginSellerRequest;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\JWTAuth;
+use JWTAuth;
 //Models
 use App\User;
 use Config;
@@ -63,26 +63,39 @@ class LoginSellerController extends AuthController
     /**
      * Log in Confirm
      *
-     * @param:user_id,password
+     * @param
+     * id:user_id
+     * pwd:password
      */
     public function confirm(Request $request)
     {
         $user = User::find($request->id);
         //expired?
-        if($user->token_2fa_expiry < Carbon::now())
-        {
-            return response()->json(['success' => 0]);
-        }
-        if($user->token_2fa != $request->pwd)
-        {
-            $this->Generate2faPin();
-            return response()->json(['success' => -1]);
-        }
-        if($user->token_2fa != $request->pwd)
-        {
-            $token = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(7)->timestamp]);
-            return response()->json(['success' => -1,'token' => $token]);
-        }
+        // if($user->token_2fa_expiry < Carbon::now())
+        // {
+        //     return response()->json(['success' => 409]);
+        // }
+        // if($user->token_2fa != $request->pwd)
+        // {
+        //     $this->Generate2faPin();
+        //     return response()->json(['success' => 401]);
+        // }
+        // thumbnail: null,
+        // username: null,
+        // email:null,
+        // id:null,
+        // token:null,
+        $response['userInfo'] = [
+            'id' => $user->id,
+            'nickname' => $user->nickname,
+            'email' => $user->email,
+            'thumbnail' => $user->cIcon,
+        ];
+        $response['result'] = 0;
+        $response['token'] = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(7)->timestamp]);
+
+
+        return response()->json($response);
     }
 
     /**

@@ -9,8 +9,20 @@ use NotificationChannels\Fcm\Resources\AndroidNotification;
 use NotificationChannels\Fcm\Resources\ApnsConfig;
 use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 
+use App\Live;
+use App\Product;
+
 class LikeProductLive extends Notification
 {
+    public $live;
+    public $product;
+
+    public function __construct(Live $live, Product $product)
+    {
+        $this->live = $live;
+        $this->product = $product;
+    }
+
     public function via($notifiable)
     {
         return [FcmChannel::class];

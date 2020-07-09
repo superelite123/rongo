@@ -4,6 +4,7 @@ namespace App\Api\V1\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\UserSetting;
 use App\Address;
 use App\State;
 use Storage;
@@ -45,6 +46,7 @@ class UserController extends Controller
         $user->nickname = $request->nickname;
         $user->gender = $request->gender;
         $user->email = $request->email;
+        $user->ale = $request->ale;
         $user->phone_number = $request->phone_number;
         $user->save();
 
@@ -85,7 +87,13 @@ class UserController extends Controller
     {
         return response()->json($this->toArray(auth()->user()));
     }
-
+    public function addAle(Request $request)
+    {
+        $user = auth()->user();
+        $user->ale += $request->ale;
+        $user->save();
+        return response()->json(['ale' => $user->ale]);
+    }
     public function store(Request $request)
     {
         $response = ['success' => 1];
@@ -125,6 +133,17 @@ class UserController extends Controller
         $response['email'] = $user->email;
         return response()->json($response);
     }
+    public function getInviteCode()
+    {
+        $user = auth()->user();
+        $user->rSetting()->where('key','invite_code')->delete();
+        $setting = new UserSetting;
+        $setting->user_id = $user->id;
+        $setting->key = 'invite_code';
+        $setting->value = mt_rand(100000, 999999);
+        $setting->save();
+        return response()->json(['inviteCode' => $setting->value]);
+    }
     public function toArray(User $user)
     {
         $response = [];
@@ -139,7 +158,7 @@ class UserController extends Controller
         $response['email']          = $user->email;
         $response['phone_number']   = $user->phone_number;
         $response['address']        = $user->rAddress;
-
+        $response['ale']            = $user->ale;
         return $response;
     }
 }

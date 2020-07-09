@@ -18,6 +18,18 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        'App\Events\OrderShipped' => [
+            'App\Listeners\SendShipmentNotification',
+        ],
+        'App\Events\LikeProductSale' => [
+            'App\Listeners\SendLikeProductSaleNotification',
+        ],
+        'App\Events\LikeProductLiving' => [
+            'App\Listeners\SendLikeProductLivingNotification',
+        ],
+        'App\Events\FollowStoreLiving' => [
+            'App\Listeners\SendFollowStoreLivingNotification',
+        ],
     ];
 
     /**
@@ -30,5 +42,15 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         //
+    }
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents()
+    {
+        return true;
     }
 }

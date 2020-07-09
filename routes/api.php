@@ -18,7 +18,7 @@ $api = app(Router::class);
 $api->version('v1', function (Router $api) {
     $api->group(['prefix' => 'auth'], function(Router $api) {
         $api->post('login/seller', 'App\\Api\\V1\\Controllers\\Auth\\LoginSellerController@login');
-        $api->post('login/seller/2fa', 'App\\Api\\V1\\Controllers\\Auth\\LoginSellerController@Confirm');
+        $api->post('login/seller/2fa', 'App\\Api\\V1\\Controllers\\Auth\\LoginSellerController@confirm');
         $api->post('register/customer', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@register');
         $api->post('login/customer', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@login');
         $api->post('login/customer/newDevice', 'App\\Api\\V1\\Controllers\\Auth\\LoginCustomerController@newDevice');
@@ -71,6 +71,8 @@ $api->version('v1', function (Router $api) {
         $api->post('store','App\\Api\\V1\\Controllers\\UserController@store');
         $api->post('uploadPhoto','App\\Api\\V1\\Controllers\\UserController@uploadPhoto');
         $api->post('updateEmail','App\\Api\\V1\\Controllers\\UserController@updateEmail');
+        $api->post('addAle','App\\Api\\V1\\Controllers\\UserController@addAle');
+        $api->get('getInviteCode','App\\Api\\V1\\Controllers\\UserController@getInviteCode');
     });
     /**
      * Address
