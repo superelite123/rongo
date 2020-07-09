@@ -80,6 +80,21 @@ class UserController extends Controller
         $user->save();
         return response()->json(['path' => $path]);
     }
+
+    /*
+    * Delete User
+    *
+    */
+    public function deleteUser(Request $request)
+    {
+        $user = auth()->user();
+        $success = $user->delete();
+        $user->rDevice()->delete();
+        $user->rStoreFollow()->delete();
+        $user->rSetting()->delete();
+        return response()->json(['success' => $success]);
+    }
+
     /**
      * Update User Info
      */

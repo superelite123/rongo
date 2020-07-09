@@ -73,6 +73,7 @@ $api->version('v1', function (Router $api) {
         $api->post('updateEmail','App\\Api\\V1\\Controllers\\UserController@updateEmail');
         $api->post('addAle','App\\Api\\V1\\Controllers\\UserController@addAle');
         $api->get('getInviteCode','App\\Api\\V1\\Controllers\\UserController@getInviteCode');
+        $api->post('deleteUser', 'App\\Api\\V1\\Controllers\\UserController@deleteUser');
     });
     /**
      * Address

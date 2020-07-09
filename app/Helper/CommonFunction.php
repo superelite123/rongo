@@ -84,11 +84,11 @@ trait CommonFunction{
 
     public function GenerateRandomString($length = 7)
     {
-        $alphas = range('A', 'Z');
+        $alphas = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $result = '';
         for($i = 0; $i < $length; $i ++)
         {
-            $result .= $alphas[mt_rand(0,26)];
+            $result .= $alphas[mt_rand(0,61)];
         }
 
         return $result;
