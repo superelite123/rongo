@@ -159,6 +159,7 @@ class UserController extends Controller
         $response['phone_number']   = $user->phone_number;
         $response['address']        = $user->rAddress;
         $response['ale']            = $user->ale;
+        $response['inviteCode']     = $user->invite_code;
         return $response;
     }
 }

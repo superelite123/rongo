@@ -81,4 +81,17 @@ trait CommonFunction{
         ProductRanking::insert($result);
         return $result;
     }
+
+    public function GenerateRandomString($length = 7)
+    {
+        $alphas = range('A', 'Z');
+        $result = '';
+        for($i = 0; $i < $length; $i ++)
+        {
+            $result .= $alphas[mt_rand(0,26)];
+        }
+
+        return $result;
+    }
+
 }
