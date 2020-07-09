@@ -82,6 +82,16 @@ class LoginCustomerController extends AuthController
             $response['success'] = -2;
         }else{
             $newUser->invite_code = $this->GenerateRandomString(7);
+            if(isset($request->invite_code))
+            {
+                $invitedUser = User::where('invite_code',$request->invite_code)->first();
+                if($invitedUser != null)
+                {
+                    $invitedUser->ale += 50;
+                    $invitedUser->save();
+                    $newUser->ale += 50;
+                }
+            }
             $newUser->save();
             $response['chat_user_id'] = $newUser->chat_id;
             $newUser->rDevice()->saveMany([
