@@ -14,8 +14,10 @@ use Carbon\Carbon;
 use App\User;
 use App\DeviceUser;
 use Config;
+use App\Helper\CommonFunction;
 class LoginCustomerController extends AuthController
 {
+    use CommonFunction;
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -79,6 +81,7 @@ class LoginCustomerController extends AuthController
         {
             $response['success'] = -2;
         }else{
+            $newUser->invite_code = $this->GenerateRandomString(7);
             $newUser->save();
             $response['chat_user_id'] = $newUser->chat_id;
             $newUser->rDevice()->saveMany([
