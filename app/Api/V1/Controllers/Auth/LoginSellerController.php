@@ -85,11 +85,24 @@ class LoginSellerController extends AuthController
         // email:null,
         // id:null,
         // token:null,
+        $follows = $user->rStore->rUsersFollow()->where('type', 1)->count();
+        $evalutionLikes = $user->rStore->rEvaluationByType(1);
+        $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
+        $evalutionDislikes = $user->rStore->rEvaluationByType(3);
+        
+        $evalution = [
+            'like' => ($evalutionLikes == NULL) ? 0 : $evalutionLikes->count(),
+            'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
+            'dislike' => ($evalutionDislikes == NULL) ? 0 : $evalutionDislikes->count()
+        ];
+
         $response['userInfo'] = [
             'id' => $user->id,
             'nickname' => $user->nickname,
             'email' => $user->email,
             'thumbnail' => $user->cIcon,
+            'numFollowers' => $follows,
+            'evaluation' => $evalution
         ];
         $response['result'] = 0;
         $response['token'] = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(7)->timestamp]);

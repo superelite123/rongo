@@ -7,6 +7,7 @@ use App\Product;
 use App\Live;
 use App\Store;
 use App\Notification;
+use App\User;
 use App\News;
 use App\Helper\CommonFunction;
 use Config;
@@ -15,6 +16,7 @@ trait LoadList
     use CommonFunction;
     public function loadProducts($options)
     {
+        
         $options['status'] = [];
         $options['status'][0] = Config::get('constants.pStatus.staged');
         $options['status'][1] = Config::get('constants.pStatus.restaged');
@@ -30,6 +32,7 @@ trait LoadList
         {
             $cond = $cond->where('label','like','%'.$options['keyword'].'%');
         }
+
         //if type == 2 favourite
         if(isset($options['type']))
         {
@@ -56,6 +59,40 @@ trait LoadList
 
             $json[] = $item;
         }
+        return $json;
+    }
+
+    public function loadProductsWithStore($options) {
+        $cond = Product::whereIn('status_id',$options['status']);
+
+        if(isset($options['store_id']))
+        {
+            $cond = $cond->where('store_id',$options['store_id']);
+        }
+
+        //specify product keyword
+        if(isset($options['keyword']))
+        {
+            $cond = $cond->where('label','like','%'.$options['keyword'].'%');
+        }
+
+        $products = $cond->get();
+        $thumbnailRootUrl = asset(Storage::url('ProductPortfolio')).'/';
+        $json = [];
+        foreach($products as $product)
+        {
+            $item['id']         = $product->id;
+            $item['label']      = $product->label;
+            $item['price']      = $product->price;
+            $item['status']     = $product->status_id;
+            $item['quantity']   = $product->qty;
+            $item['numLikes']   = $product->rUserLike()->count();
+            $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
+            $item['number']  = $product->number;
+
+            $json[] = $item;
+        }
+
         return $json;
     }
 
@@ -139,6 +176,24 @@ trait LoadList
             $item['description'] = $store->description;
             $item['nTotalFollows'] = $store->nTotalFollow;
             $item['icon'] = $store->rUser->cIcon;
+        }else{
+            $item = null;
+        }
+
+        return $item;
+    }
+
+    public function UsertoArray(User $user) {
+        $item = [];
+        if($user != null)
+        {
+            $item = [];
+            $item['id'] = $user->id;
+            $item['nickname'] = $user->nickname;
+            $item['thumbnail'] = $user->cIcon;
+            $item['description'] = $user->description;
+            $item['nTotalFollows'] = $user->rStoreFollow()->where('type',1)->count();
+            $item['nTotalBlocks'] = $user->rStoreFollow()->where('type',2)->count();
         }else{
             $item = null;
         }

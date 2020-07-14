@@ -54,6 +54,8 @@ $api->version('v1', function (Router $api) {
          */
         $api->get('stores','App\\Api\\V1\\Controllers\\StoreController@index');
         $api->get('store/{id}','App\\Api\\V1\\Controllers\\StoreController@show');
+        $api->get('store/follows/{type}', 'App\\Api\\V1\\Controllers\\StoreController@follows');
+        $api->get('store/products/{type}', 'App\\Api\\V1\\Controllers\\StoreController@products');
         /**
          * Search
          */

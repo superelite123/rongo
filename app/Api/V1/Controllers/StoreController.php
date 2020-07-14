@@ -48,4 +48,47 @@ class StoreController extends Controller
 
         return response()->json( $response );
     }
+
+    public function follows($type) {
+        $user = auth()->user();
+        $store = $user->rStore;
+        $follows = $store->rUsersFollow()->where('type', $type)->get();
+
+        foreach($follows as $follow)
+        {
+            $follower = $follow->rUser;
+            if($follower != null)
+            {
+                $data = $this->UsertoArray($follower);
+                $block = $follower->rStoreFollow()->where(['type' => 2, 'store_id' => $store->id])->count();
+                $data['isBlock'] = ($block == NULL || $block == 0) ? false : true;
+                $response[] = $data;
+            }
+        }
+
+        return response()->json( $response );
+    }
+
+    public function products($type) {
+        $user = auth()->user();
+        $store = $user->rStore;
+        
+        $options['status'] = [];
+        if ($type == 0) {
+            $options['status'][0] = Config::get('constants.pStatus.draft');
+            $options['status'][1] = Config::get('constants.pStatus.staged');
+            $options['status'][2] = Config::get('constants.pStatus.restaged');
+            $options['status'][3] = Config::get('constants.pStatus.sold');
+        } else if ($type == 1) {
+            $options['status'][0] = Config::get('constants.pStatus.staged');
+        } else {
+            $options['status'][0] = Config::get('constants.pStatus.draft');
+        }
+
+        $options['store_id'] = $store->id;
+        
+        $response['products']       = $this->loadProductsWithStore($options);
+
+        return response()->json( $response );
+    }
 }
