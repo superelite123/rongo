@@ -32,6 +32,10 @@ class Store extends Model
         return $this->hasMany(StoreExplantion::class,'store_id');
     }
 
+    public function rProduct() {
+        return $this->hasMany(Product::class,'store_id');
+    }
+
     public function rEvaluationByType($type)
     {
         return $this->rEvaluation()->where('type',$type)->get();

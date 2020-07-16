@@ -33,6 +33,11 @@ class Product extends Model
         return $this->hasMany(ProductPortfolio::class,'product_id');
     }
 
+    public function rOrder()
+    {
+        return $this->hasMany(Order::class,'product_id');
+    }
+
     public function Thumbnail()
     {
         $thumanail = $this->rPortfolio()->where('order','=', 1)->first();

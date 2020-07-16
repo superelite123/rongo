@@ -1,6 +1,7 @@
 <?php
 namespace App\Api\V1\Controllers\Payment;
 
+use Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
@@ -63,5 +64,122 @@ class OrderController extends Controller
     public function show($id)
     {
 
+    }
+
+    public function getTransactions() {
+        $user = auth()->user();
+        $store = $user->rStore;
+        $response = [];
+        
+        $products = $store->rProduct;
+        
+        foreach($products as $product) {
+            $transactions = $product->rOrder;
+
+            foreach($transactions as $transaction) {
+                $data = [];
+                $data["id"] = $transaction->id;
+                $data["number"] = $transaction->order_id;
+                $data["quantity"] = $transaction->qty;
+                $data["price"] = $transaction->price;
+                $data["status"] = $transaction->status_id;
+                $data["deliveryFee"] = $transaction->delivery_fee;
+                $data["orderDate"] = $transaction->created_at;
+                $data["product"] = [
+                    "id" => $transaction->rProduct->id,
+                    "title" => $transaction->rProduct->label,
+                    "number" => $transaction->rProduct->number,
+                    "thumbnail" => asset(Storage::url('ProductPortfolio')).'/'.$transaction->rProduct->Thumbnail(),
+                ];
+
+                $data["user"] = [
+                    "id" => $transaction->rUser->id,
+                    "nickname" => $transaction->rUser->nickname,
+                ];
+
+                $data["address"] = [
+                    "id" => $transaction->rDAddress->id,
+                    "postalCode" => $transaction->rDAddress->postal_code,
+                    "houseNo" => $transaction->rDAddress->houst_number,
+                    "street" => $transaction->rDAddress->street,
+                    "state" => $transaction->rDAddress->rState->name,
+                    "county" => $transaction->rDAddress->county,
+                    "company" => $transaction->rDAddress->company,
+                    "firstname" => $transaction->rDAddress->firstname_1,
+                    "lastname" => $transaction->rDAddress->lastname_1,
+                ];
+
+                $response[] = $data;
+            }
+        }
+
+        return response()->json($response);
+    }
+
+    public function getSellHistory() {
+        $user = auth()->user();
+        $store = $user->rStore;
+        $products = $store->rProduct;
+        $response = [];
+        $dataPerDate = [];
+        $dataPerMonth = [];
+        foreach($products as $product) {
+            $transactions = $product->rOrder()->orderBy("created_at", "desc")->get()->groupBy(function($item) {
+                return $item->created_at->format('yy-m-d');
+            });
+
+            foreach ($transactions as $dateStr => $values) {
+                $ordersPerDate = [];
+                $price = 0;
+                if (array_key_exists($dateStr, $dataPerDate)) {
+                    $ordersPerDate = $dataPerDate[$dateStr];
+                    $price = $ordersPerDate["price"];
+                }
+
+                foreach ($values as $value) {
+                    $data = [];
+                    $data["id"] = $value["id"];
+                    $data["number"] = $value["order_id"];
+                    $data["quantity"] = $value["qty"];
+                    $data["price"] = $value["price"];
+                    $data["status"] = $value["status_id"];
+                    $data["deliveryFee"] = $value["delivery_fee"];
+                    $data["orderDate"] = $value["created_at"];
+                    $data["product"] = [
+                        "id" => $product->id,
+                        "title" => $product->label,
+                        "number" => $product->number,
+                        "thumbnail" => asset(Storage::url('ProductPortfolio')).'/'.$product->Thumbnail(),
+                    ];
+
+                    $ordersPerDate["price"] = $price + $value["price"];
+                    $ordersPerDate["order"][] = $data;
+                }
+                
+
+                $dataPerDate[$dateStr] = $ordersPerDate;
+            }
+        }
+
+        
+        foreach ($dataPerDate as $dateStr => $values ) {
+
+            $dateMonth = substr($dateStr, 0, 7);
+
+            $datas = [];
+            $price = 0;
+            if (array_key_exists($dateMonth, $dataPerMonth)) {
+                $datas = $dataPerMonth[$dateMonth];
+                $price = $datas["totalPrice"];
+            }
+
+            $datas[$dateStr] = $values;
+            $datas["totalPrice"] = $price + $values["price"];
+            $dataPerMonth[$dateMonth] = $datas;
+        }
+
+        $response = $dataPerMonth;
+
+        return response()->json($response);
     }
 }

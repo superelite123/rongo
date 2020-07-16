@@ -13,4 +13,13 @@ class DAddress extends Model
                             'company','state_id','county','street','houst_number',
                             'phone_number','postal_code'
     ];
+
+
+    public function rState() {
+        return $this->belongsTo(State::class, 'state_id');
+    }
+
+    public function rOrder() {
+        return $this->hasMany(Order::class,'address_id');
+    }
 }

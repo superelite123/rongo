@@ -96,6 +96,10 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => 'jwt.auth','prefix' => 'payment'], function(Router $api) {
         $api->get('card/','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
         $api->post('execute/','App\\Api\\V1\\Controllers\\Payment\\OrderController@execute');
+        $api->get('cards','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
+        $api->post('add_card','App\\Api\\V1\\Controllers\\Payment\\CardController@store');
+        $api->get('transactions', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getTransactions');
+        $api->get('sellHistory', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getSellHistory');
     });
     /**
      * Notification
@@ -109,13 +113,7 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => 'jwt.auth','prefix' => 'news'], function(Router $api) {
         $api->get('/','App\\Api\\V1\\Controllers\\NewsController@index');
     });
-    /**
-     * Payment
-     */
-    $api->group(['middleware' => 'jwt.auth','prefix' => 'payment'], function(Router $api) {
-        $api->get('cards','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
-        $api->post('add_card','App\\Api\\V1\\Controllers\\Payment\\CardController@store');
-    });
+    
     /**
      * User Setting
      */
