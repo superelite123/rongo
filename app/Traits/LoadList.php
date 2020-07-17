@@ -158,6 +158,10 @@ trait LoadList
             $item['date']           = $live->created_at->format('Y-m-d');
             $item['cid']            = $live->cid;
             $item['cadmin_id']      = $live->cadmin_id;
+
+            $watchStatus = $live->nWatchers;
+            $item['nLive'] = $watchStatus["live"];
+            $item['nReplay'] = $watchStatus["replay"];
         }else{
             $item = null;
         }

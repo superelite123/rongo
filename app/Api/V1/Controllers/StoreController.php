@@ -102,8 +102,12 @@ class StoreController extends Controller
         $status[1] = 3;
         $lives = $store->getLiveStreams($status);
 
-        $response['lives']          = $lives;
+        foreach($lives as $live)
+        {
+            $liveData = $this->liveToArray($live);
+            $response[] = $liveData;
+        }
 
-        return response()->json( $store );
+        return response()->json( $response );
     }
 }
