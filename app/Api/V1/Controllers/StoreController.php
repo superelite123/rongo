@@ -91,4 +91,19 @@ class StoreController extends Controller
 
         return response()->json( $response );
     }
+
+    public function liveStreams($type) 
+    {
+        $user = auth()->user();
+        $store = $user->rStore;
+
+        $status = [];
+        $status[0] = 2;
+        $status[1] = 3;
+        $lives = $store->getLiveStreams($status);
+
+        $response['lives']          = $lives;
+
+        return response()->json( $store );
+    }
 }

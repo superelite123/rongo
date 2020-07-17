@@ -56,6 +56,7 @@ $api->version('v1', function (Router $api) {
         $api->get('store/{id}','App\\Api\\V1\\Controllers\\StoreController@show');
         $api->get('store/follows/{type}', 'App\\Api\\V1\\Controllers\\StoreController@follows');
         $api->get('store/products/{type}', 'App\\Api\\V1\\Controllers\\StoreController@products');
+        $api->get('store/liveStream/{type}', 'App\\Api\\V1\\Controllers\\StoreController@liveStreams');
         /**
          * Search
          */

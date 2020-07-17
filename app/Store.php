@@ -22,6 +22,12 @@ class Store extends Model
     {
         return $this->hasMany(StoreBackground::class,'store_id');
     }
+
+    public function rLiveStreams()
+    {
+        return $this->hasMany(Live::class,'store_id');
+    }
+
     public function rEvaluation()
     {
         return $this->hasMany(StoreEvaluation::class,'store_id');
@@ -74,5 +80,9 @@ class Store extends Model
         }
 
         return $response;
+    }
+
+    public function getLiveStreams($status) {
+        return $this->rLiveStreams();//->whereIn('status_id', $status)->get();
     }
 }
