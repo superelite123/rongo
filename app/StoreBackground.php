@@ -8,4 +8,5 @@ class StoreBackground extends Model
 {
     //
     protected $table = 'store_background';
+    protected $fillable = ['filename','order'];
 }

@@ -61,11 +61,13 @@ return [
             'driver' => 'local',
             'root'   => storage_path('app/public/StoreBackground'),
             'visibility' => 'public',
+            'url' => env('APP_URL').'/storage/StoreBackground',
         ],
         'store_explantion' => [
             'driver' => 'local',
             'root'   => storage_path('app/public/StoreExplantion'),
             'visibility' => 'public',
+            'url' => env('APP_URL').'/storage/StoreExplantion',
         ],
         'user_icon' => [
             'driver' => 'local',

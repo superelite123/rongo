@@ -42,6 +42,11 @@ class Store extends Model
         return $this->hasMany(Product::class,'store_id');
     }
 
+    public function rTag()
+    {
+        return $this->hasMany(StoreHasTag::class,'store_id');
+    }
+
     public function rEvaluationByType($type)
     {
         return $this->rEvaluation()->where('type',$type)->get();

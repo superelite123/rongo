@@ -13,8 +13,11 @@ class CreateStoreDescriptionTalbe extends Migration
      */
     public function up()
     {
-        Schema::create('store_description_talbe', function (Blueprint $table) {
+        Schema::create('store_explantion', function (Blueprint $table) {
             $table->id();
+            $table->integer('store_id');
+            $table->string('filename');
+            $table->tinyInteger('order');
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ class AddFieldsToUsers extends Migration
             //
             $table->integer('ale')->default(0);
             $table->string('invite_code')->default(null)->length('50');
-            $table->unique(['invite_code']);
+            //$table->unique(['invite_code']);
         });
     }
 
