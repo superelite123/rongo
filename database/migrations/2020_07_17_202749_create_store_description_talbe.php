@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldsToUsers extends Migration
+class CreateStoreDescriptionTalbe extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class AddFieldsToUsers extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-            $table->integer('ale')->default(0);
-            $table->string('invite_code')->default(null)->length('50');
-            //$table->unique(['invite_code']);
+        Schema::create('store_explantion', function (Blueprint $table) {
+            $table->id();
+            $table->integer('store_id');
+            $table->string('filename');
+            $table->tinyInteger('order');
+            $table->timestamps();
         });
     }
 
@@ -28,8 +29,6 @@ class AddFieldsToUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('store_description_talbe');
     }
 }

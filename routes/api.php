@@ -77,6 +77,8 @@ $api->version('v1', function (Router $api) {
         $api->post('addAle','App\\Api\\V1\\Controllers\\UserController@addAle');
         $api->get('getInviteCode','App\\Api\\V1\\Controllers\\UserController@getInviteCode');
         $api->post('deleteUser', 'App\\Api\\V1\\Controllers\\UserController@deleteUser');
+        $api->get('getStore','App\\Api\\V1\\Controllers\\UserStoreController@index');
+        $api->post('saveStore','App\\Api\\V1\\Controllers\\UserStoreController@store');
     });
     /**
      * Address
@@ -114,7 +116,7 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => 'jwt.auth','prefix' => 'news'], function(Router $api) {
         $api->get('/','App\\Api\\V1\\Controllers\\NewsController@index');
     });
-    
+
     /**
      * User Setting
      */

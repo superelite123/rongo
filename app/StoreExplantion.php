@@ -8,4 +8,5 @@ class StoreExplantion extends Model
 {
     //
     protected $table = 'store_explantion';
+    protected $fillable = ['filename','order'];
 }
