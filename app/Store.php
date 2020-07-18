@@ -83,6 +83,6 @@ class Store extends Model
     }
 
     public function getLiveStreams($status) {
-        return $this->rLiveStreams();//->whereIn('status_id', $status)->get();
+        return $this->rLiveStreams()->whereIn('status_id', $status)->get();
     }
 }
