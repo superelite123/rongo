@@ -121,5 +121,14 @@ class LoginSellerController extends AuthController
         $user->token_2fa = $pin;
         $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
         $user->save();
+
+        // the message
+        $msg = "Rongo ログイン認証コード: $pin";
+
+        // use wordwrap() if lines are longer than 70 characters
+        $msg = wordwrap($msg,70);
+
+        // send email
+        mail($user->email,"Rongo ログイン認証コード",$msg );
     }
 }
