@@ -123,12 +123,12 @@ class LoginSellerController extends AuthController
         $user->save();
 
         // the message
-        $msg = "First line of text\nSecond line of text";
+        $msg = "Rongo ログイン認証コード: $pin";
 
         // use wordwrap() if lines are longer than 70 characters
         $msg = wordwrap($msg,70);
 
         // send email
-        mail($user->email,"Rongo ログイン認証コード",$msg);
+        mail($user->email,"Rongo ログイン認証コード",$msg );
     }
 }
