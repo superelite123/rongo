@@ -117,7 +117,7 @@ class LiveController extends WowzaController
     {
         return $this->fetchLiveStream(Live::find($id)->stream_id);
     }
-    public function produts($id)
+    public function products($id)
     {
         $response = [];
         $products = Live::find($id)->rProducts;
@@ -125,6 +125,42 @@ class LiveController extends WowzaController
         {
             $response[] = $this->proucttoArray($product->rProduct);
         }
+        return response()->json($response);
+    }
+    public function initialProducts()
+    {
+        $store = auth()->user()->rStore;
+
+        $lives = $store->rLiveStreams;
+        $livedProducts = [];
+        foreach($lives as $live)
+        {
+            foreach($live->rProducts as $product_id)
+            {
+                $livedProducts[] = $product_id->product_id;
+            }
+        }
+
+        $products = $store->rProduct()
+                    ->whereNotIn('id',$livedProducts)
+                    ->where('status_id',Config::get('constants.pStatus.added'))
+                    ->get();
+        $response = [];
+        $thumbnailRootUrl = asset(Storage::url('ProductPortfolio')).'/';
+        foreach($products as $product)
+        {
+            $item['id']         = $product->id;
+            $item['label']      = $product->label;
+            $item['price']      = $product->price;
+            $item['status']     = $product->status_id;
+            $item['quantity']        = $product->qty;
+            $item['numLikes']   = $product->rUserLike()->count();
+            $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
+            $item['number']     = $product->number;
+
+            $response[] = $item;
+        }
+
         return response()->json($response);
     }
     public function view($id)
@@ -297,7 +333,7 @@ class LiveController extends WowzaController
         // $product->status_id = $nextStatus;
         // $product->save();
 
-        $response['products'] = $this->produts($live->id);
+        $response['products'] = $this->products($live->id);
         /**Send Push Notification */
         event(new LikeProductLiving($live,$product));
         return response()->json($response);

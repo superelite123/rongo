@@ -35,21 +35,6 @@ $api->version('v1', function (Router $api) {
         $api->post('product/click', 'App\\Api\\V1\\Controllers\\ProductClickController@store');
         $api->get('products/ranking', 'App\\Api\\V1\\Controllers\\ProductController@rankings');
         /**
-         * Live
-         */
-        $api->get('lives', 'App\\Api\\V1\\Controllers\\LiveController@index');
-        $api->post('live/create', 'App\\Api\\V1\\Controllers\\LiveController@create')->middleware('checklivecreator');
-        $api->get('live/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
-        $api->get('live/start/{id}', 'App\\Api\\V1\\Controllers\\LiveController@start');
-        $api->get('live/publish/{id}', 'App\\Api\\V1\\Controllers\\LiveController@publish');
-        $api->get('live/stop/{id}', 'App\\Api\\V1\\Controllers\\LiveController@stop');
-        $api->get('live/state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
-        $api->get('live/view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
-        $api->get('live/products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@produts');
-        $api->post('live/register', 'App\\Api\\V1\\Controllers\\LiveController@register');
-        $api->post('live/register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
-        $api->post('live/add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
-        /**
          * Store
          */
         $api->get('stores','App\\Api\\V1\\Controllers\\StoreController@index');
@@ -62,6 +47,24 @@ $api->version('v1', function (Router $api) {
          */
         $api->post('search','App\\Api\\V1\\Controllers\\SearchController@index');
         $api->get('search/logs','App\\Api\\V1\\Controllers\\SearchController@logs');
+    });
+    /**
+     * Live
+     */
+    $api->group( ['prefix' => 'live','middleware' => 'jwt.auth'], function(Router $api){
+        $api->get('/', 'App\\Api\\V1\\Controllers\\LiveController@index');
+        $api->post('create', 'App\\Api\\V1\\Controllers\\LiveController@create')->middleware('checklivecreator');
+        $api->get('view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
+        $api->get('start/{id}', 'App\\Api\\V1\\Controllers\\LiveController@start');
+        $api->get('publish/{id}', 'App\\Api\\V1\\Controllers\\LiveController@publish');
+        $api->get('stop/{id}', 'App\\Api\\V1\\Controllers\\LiveController@stop');
+        $api->get('state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
+        $api->get('view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
+        $api->get('initial_products', 'App\\Api\\V1\\Controllers\\LiveController@initialProducts');
+        $api->get('products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@products');
+        $api->post('register', 'App\\Api\\V1\\Controllers\\LiveController@register');
+        $api->post('register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
+        $api->post('add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
     });
     /**
      * User Detail

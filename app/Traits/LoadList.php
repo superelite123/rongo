@@ -16,7 +16,7 @@ trait LoadList
     use CommonFunction;
     public function loadProducts($options)
     {
-        
+
         $options['status'] = [];
         $options['status'][0] = Config::get('constants.pStatus.staged');
         $options['status'][1] = Config::get('constants.pStatus.restaged');
@@ -216,6 +216,7 @@ trait LoadList
             $item['status_id'] = $product->status_id;
             $item['thumbnail'] = asset(Storage::url('ProductPortfolio/').$product->Thumbnail());
             $item['number'] = $product->number;
+            $item['qty']    = $product->qty;
             $item['ship_days'] = $product->ship_days;
             $item['shipper'] = $product->ship_days;
             $item['storeId'] = $product->store_id;
