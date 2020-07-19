@@ -5,13 +5,6 @@ require "capistrano/setup"
 require "capistrano/deploy"
 require "capistrano/laravel"
 
-require 'capistrano/bundle_rsync'
-
-# capistrano-3.7+
-require 'capistrano/bundle_rsync/plugin'
-install_plugin Capistrano::BundleRsync::Plugin
-
-
 # Load the SCM plugin appropriate to your project:
 #
 # require "capistrano/scm/hg"
@@ -20,6 +13,11 @@ install_plugin Capistrano::BundleRsync::Plugin
 # require "capistrano/scm/svn"
 # install_plugin Capistrano::SCM::Svn
 # or
+#
+require 'capistrano/bundle_rsync'
+
+require 'capistrano/bundle_rsync/plugin'
+install_plugin Capistrano::BundleRsync::Plugin
 
 # Include tasks from other gems included in your Gemfile
 #
