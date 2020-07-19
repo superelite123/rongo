@@ -99,17 +99,19 @@ class LoginSellerController extends AuthController
                 'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
                 'dislike' => ($evalutionDislikes == NULL) ? 0 : $evalutionDislikes->count()
             ];
+        } else {
+            $evalution = [
+                'like' => 0,
+                'notBad' => 0,
+                'dislike' => 0
+            ];
         }
         // $follows = $user->rStore->rUsersFollow()->where('type', 1)->count();
         // $evalutionLikes = $user->rStore->rEvaluationByType(1);
         // $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
         // $evalutionDislikes = $user->rStore->rEvaluationByType(3);
         
-        // $evalution = [
-        //     'like' => ($evalutionLikes == NULL) ? 0 : $evalutionLikes->count(),
-        //     'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
-        //     'dislike' => ($evalutionDislikes == NULL) ? 0 : $evalutionDislikes->count()
-        // ];
+        
 
         $response['userInfo'] = [
             'id' => $user->id,
