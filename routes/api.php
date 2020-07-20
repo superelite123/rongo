@@ -53,13 +53,13 @@ $api->version('v1', function (Router $api) {
      */
     $api->group( ['prefix' => 'live','middleware' => 'jwt.auth'], function(Router $api){
         $api->get('/', 'App\\Api\\V1\\Controllers\\LiveController@index');
-        $api->post('create', 'App\\Api\\V1\\Controllers\\LiveController@create')->middleware('checklivecreator');
+        $api->post('create', 'App\\Api\\V1\\Controllers\\LiveController@create');
+        $api->post('quit', 'App\\Api\\V1\\Controllers\\LiveController@quit');
         $api->get('view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
         $api->get('start/{id}', 'App\\Api\\V1\\Controllers\\LiveController@start');
         $api->get('publish/{id}', 'App\\Api\\V1\\Controllers\\LiveController@publish');
         $api->get('stop/{id}', 'App\\Api\\V1\\Controllers\\LiveController@stop');
         $api->get('state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
-        $api->get('view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
         $api->get('initial_products', 'App\\Api\\V1\\Controllers\\LiveController@initialProducts');
         $api->get('products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@products');
         $api->post('register', 'App\\Api\\V1\\Controllers\\LiveController@register');

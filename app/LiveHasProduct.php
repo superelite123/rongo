@@ -8,7 +8,7 @@ class LiveHasProduct extends Model
 {
     //
     protected $table = 'live_has_product';
-
+    protected $fillable = ['live_id','product_id','qty','sold_qty'];
     public function getSoldStatusAttribute()
     {
         return $this->qty - $this->sold_qty <=0 ? 1 : 0;
