@@ -45,7 +45,7 @@ class LiveController extends WowzaController
             'cid' => null,
             'cadmin_id' => null
         ];
-        $liveStreamReponse  =[];
+        $liveStreamReponse = [];
         //Create LiveStream
         //$this->createLiveStream($request->title)
         $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);

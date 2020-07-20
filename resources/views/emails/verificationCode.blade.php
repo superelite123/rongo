@@ -179,7 +179,7 @@
           <!-- Logo -->
           <tr>
             <td class="email-masthead">
-              <a class="email-masthead_name">Longo</a>
+              <a class="email-masthead_name">Rongo</a>
             </td>
           </tr>
           <!-- Email Body -->
