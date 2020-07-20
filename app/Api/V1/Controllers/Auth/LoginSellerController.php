@@ -120,7 +120,7 @@ class LoginSellerController extends AuthController
             'nickname' => $user->nickname,
             'email' => $user->email,
             'thumbnail' => $user->cIcon,
-            'numFollowers' => $follows,
+            'numFollowers' => ($follows == null) ? 0 : $follows,
             'evaluation' => $evalution
         ];
 
