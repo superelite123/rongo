@@ -2,9 +2,11 @@
 
 namespace App\Api\V1\Controllers\Auth;
 
+use Mail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Api\V1\Requests\LoginSellerRequest;
+use App\Mail\EmailVerificationCode;
 use Illuminate\Http\Request;
 use JWTAuth;
 //Models
@@ -140,13 +142,6 @@ class LoginSellerController extends AuthController
         $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
         $user->save();
 
-        // the message
-        $msg = "Rongo ログイン認証コード: $pin";
-
-        // use wordwrap() if lines are longer than 70 characters
-        $msg = wordwrap($msg,70);
-
-        // send email
-        mail($user->email,"Rongo ログイン認証コード",$msg );
+        Mail::to($user->email)->send(new EmailVerificationCode($pin));
     }
 }
