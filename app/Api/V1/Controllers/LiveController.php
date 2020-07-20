@@ -10,7 +10,9 @@ use Carbon\Carbon;
 use App\User;
 use App\Live;
 use App\LiveHasUser;
+use App\LiveHasProduct;
 use App\Product;
+use App\Tag;
 use App\SMSVerification;
 use Twilio\Rest\Client as TwilloClient;
 use GetStream\StreamChat\Client;
@@ -43,55 +45,107 @@ class LiveController extends WowzaController
             'cid' => null,
             'cadmin_id' => null
         ];
-
+        $liveStreamReponse  =[];
         //Create LiveStream
-        //$liveStreamReponse = json_decode($this->createLiveStream($request->title));
-        $liveStreamReponse = ['id' => '23232df',
-                              'player_hls_playback_url' => 'https://cdn3.wowza.com/1/dlFQWTU5eW5uUGIx/NWtYMlFt/hls/live/playlist.m3u8'];
+        $a = '{"live_stream":{"id":"v1sq5qfp","name":"MyLiveStream1","transcoder_type":"transcoded","billing_mode":"pay_as_you_go","broadcast_location":"us_west_california","vod_stream":false,"recording":false,"closed_caption_type":"none","low_latency":false,"encoder":"other_webrtc","delivery_method":"push","target_delivery_protocol":"hls-https","use_stream_source":false,"aspect_ratio_width":1920,"aspect_ratio_height":1080,"delivery_protocols":["rtmp","rtsp","wowz","hls"],"source_connection_information":{"sdp_url":"wss:\/\/66494d.entrypoint.cloud.wowza.com\/webrtc-session.json","application_name":"app-2891","stream_name":"cGNkWldF"},"player_id":"zxrclwvl","player_type":"wowza_player","player_responsive":true,"player_countdown":false,"player_embed_code":"in_progress","player_hls_playback_url":"https:\/\/cdn3.wowza.com\/1\/NVZUVEhoSi9vTmRa\/cGNkWldF\/hls\/live\/playlist.m3u8","hosted_page":true,"hosted_page_title":"MyLiveStream1","hosted_page_url":"in_progress","hosted_page_sharing_icons":true,"stream_targets":[{"id":"pnbgpv4w"}],"direct_playback_urls":{"rtmp":[{"name":"source","url":"rtmp:\/\/66494d.entrypoint.cloud.wowza.com\/app-2891\/ed8b2df2"},{"name":"passthrough","output_id":"gpjvbjvb","url":"rtmp:\/\/66494d.entrypoint.cloud.wowza.com\/app-2891\/ed8b2df2_stream1"},{"name":"1280x720","output_id":"lj3typc2","url":"rtmp:\/\/66494d.entrypoint.cloud.wowza.com\/app-2891\/ed8b2df2_stream2"},{"name":"854x480","output_id":"c2wg8xss","url":"rtmp:\/\/66494d.entrypoint.cloud.wowza.com\/app-2891\/ed8b2df2_stream3"},{"name":"640x360","output_id":"hntvfnvb","url":"rtmp:\/\/66494d.entrypoint.cloud.wowza.com\/app-2891\/ed8b2df2_stream4"},{"name":"512x288","output_id":"3bsrvfb1","url":"rtmp:\/\/66494d.entrypoint.cloud.wowza.com\/app-2891\/ed8b2df2_stream5"},{"name":"320x180","output_id":"gwzvd3dv","url":"rtmp:\/\/66494d.entrypoint.cloud.wowza.com\/app-2891\/ed8b2df2_stream6"}],"rtsp":[{"name":"source","url":"rtsp:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2"},{"name":"passthrough","output_id":"gpjvbjvb","url":"rtsp:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream1"},{"name":"1280x720","output_id":"lj3typc2","url":"rtsp:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream2"},{"name":"854x480","output_id":"c2wg8xss","url":"rtsp:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream3"},{"name":"640x360","output_id":"hntvfnvb","url":"rtsp:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream4"},{"name":"512x288","output_id":"3bsrvfb1","url":"rtsp:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream5"},{"name":"320x180","output_id":"gwzvd3dv","url":"rtsp:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream6"}],"wowz":[{"name":"source","url":"wowz:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2"},{"name":"passthrough","output_id":"gpjvbjvb","url":"wowz:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream1"},{"name":"1280x720","output_id":"lj3typc2","url":"wowz:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream2"},{"name":"854x480","output_id":"c2wg8xss","url":"wowz:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream3"},{"name":"640x360","output_id":"hntvfnvb","url":"wowz:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream4"},{"name":"512x288","output_id":"3bsrvfb1","url":"wowz:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream5"},{"name":"320x180","output_id":"gwzvd3dv","url":"wowz:\/\/66494d.entrypoint.cloud.wowza.com:1935\/app-2891\/ed8b2df2_stream6"}]},"created_at":"2020-07-20T08:31:20.000Z","updated_at":"2020-07-20T08:31:22.000Z"}}';
+        //$this->createLiveStream($request->title)
+        $liveStreamReponse = json_decode($this->createLiveStream($request->title),true)['live_stream'];
+
+        // $liveStreamReponse = ['id' => '23232df',
+        //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
+        //                       'source_connection_information' => [
+        //                         'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+        //                         'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+        //                         'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+        //                       ]
+        // ];
 
         /**
          * Create Chat Channel
          */
-        $client = new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
-        //Channel ID
-        $cid = uniqid();
-        $cadmin = [
-            'id' => $user->chat_id,
-            'role' => 'admin',
-            'name' => 'admin',
-        ];
-        $client->updateUser($cadmin);
-        $channelConfig = [
-                          'name' => $request->title,
-                          'typing_events' => true,
-                          'read_events' => true,
-                          'connect_events' => true,
-                         ];
-        // Instantiate a livestream type channel with id homeShopping
-        $channel = $client->Channel("livestream", $cid, $channelConfig);
-        unset($channelConfig['name']);
-        $channelType = $client->updateChannelType('livestream',$channelConfig);
-        //print_r($channelType);
-        // Create the channel
-        $state = $channel->create($cadmin['id']);
+        // $client = new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
+        // //Channel ID
+        // $cid = uniqid();
+        // $cadmin = [
+        //     'id' => $user->chat_id,
+        //     'role' => 'admin',
+        //     'name' => 'admin',
+        // ];
+        // $client->updateUser($cadmin);
+        // $channelConfig = [
+        //                   'name' => $request->title,
+        //                   'typing_events' => true,
+        //                   'read_events' => true,
+        //                   'connect_events' => true,
+        //                  ];
+        // // Instantiate a livestream type channel with id homeShopping
+        // $channel = $client->Channel("livestream", $cid, $channelConfig);
+        // unset($channelConfig['name']);
+        // $channelType = $client->updateChannelType('livestream',$channelConfig);
+        // //print_r($channelType);
+        // // Create the channel
+        // $state = $channel->create($cadmin['id']);
         //Create Live
-        // $live = new Live;
-        // $live->photo        = '2.png';
-        // $live->title        = $request->title;
-        // $live->store_id     = $user->rStore->id;
-        // $live->tag_id       = $this->registerTag($request->tag);
-        // $live->status_id    = 1;
-        // $live->stream_id    = $liveStreamReponse['id'];
-        // $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
+        $live = new Live;
+        $live->title        = $request->title;
+        $live->store_id     = $user->rStore->id;
+        $live->tag_id       = $this->registerTag($request->tag);
+        $live->status_id    = 1;
+        $live->stream_id    = $liveStreamReponse['id'];
+        $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
+        $live->photo = 'aa.png';
         // $live->cid          = $cid;
         // $live->cadmin_id    = $cadmin['id'];
-        //$live->save();
+        $live->save();
+        //Save Thumbnail
+        $filename = $live->id.'.png';
+        if(!Storage::disk('live_photo')->put($filename, $request->thumbnail ) )
+        {
+            return -1;
+        }
+        $live->photo        = $filename;
+        $live->save();
+        $productInsertData = [];
+        foreach($request->products as $_product)
+        {
+            $productInsertData[] = new LiveHasProduct([
+                'product_id' => $_product['id'],
+                'qty' => $_product['addQty'],
+                'sold_qty' => 0
+            ]);
+            $product = Product::find($_product['id']);
+            $product->qty -= $_product['addQty'];
+        }
+        $live->rProducts()->saveMany($productInsertData);
 
-        $response['id']             = $live->id;
-        $response['cid']            = $live->cid;
-        $response['cadmin_id']      = $live->cadmin_id;
+        $response = [];
+        $response['id']         = $live->id;
+        $response['liveData']    = $liveStreamReponse['source_connection_information'];
+        $response['hls_url'] = $live->hls_url;
+        // $response['cid']            = $live->cid;
+        // $response['cadmin_id']      = $live->cadmin_id;
 
         return response()->json($response);
+    }
+
+    public function quit(Request $request)
+    {
+        $live = Live::find($request->id);
+        if($live == null) return -1;
+        $live->status_id=2;
+        $live->save();
+    }
+
+    public function registerTag($tag)
+    {
+        $existTag = Tag::where('label',$tag)->first();
+        if($existTag == null)
+        {
+            $existTag = new Tag;
+        }
+        $existTag->label = $tag;
+        $existTag->save();
+        return $existTag->id;
     }
 
     public function start($id)
@@ -170,7 +224,7 @@ class LiveController extends WowzaController
         $live = Live::find($id);
 
         $response = $this->liveToArray($live);
-        $response['nViewer'] = $this->getUsageLiveStream($live->stream_target_id)['stream_target']['unique_viewers'];
+        $response['nViewer'] = 0;//$this->getUsageLiveStream($live->stream_target_id)['stream_target']['unique_viewers'];
         $response['evaluation'] = $live->rEvaluation()->count();
         $response['seller'] = [];
 
@@ -182,7 +236,6 @@ class LiveController extends WowzaController
 
         return response()->json( $response );
     }
-
     public function register(Request $request)
     {
         /**
