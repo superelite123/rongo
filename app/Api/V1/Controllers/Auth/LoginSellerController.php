@@ -89,7 +89,8 @@ class LoginSellerController extends AuthController
         // token:null,
 
         $store = $user->rStore;
-
+        $follows = 0;
+        
         if ($store != NULL) {
             $follows = $store->rUsersFollow()->where('type', 1)->count();
             $evalutionLikes = $user->rStore->rEvaluationByType(1);
@@ -120,7 +121,7 @@ class LoginSellerController extends AuthController
             'nickname' => $user->nickname,
             'email' => $user->email,
             'thumbnail' => $user->cIcon,
-            'numFollowers' => $follows,
+            'numFollowers' => ($follows == null) ? 0 : $follows,
             'evaluation' => $evalution
         ];
 
