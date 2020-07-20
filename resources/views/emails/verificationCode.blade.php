@@ -189,8 +189,8 @@
                 <!-- Body content -->
                 <tr>
                   <td class="content-cell">
-                    <h1>確認コード</h1>
-                    <p>Longoに登録してくれてありがとう! 確認コードをお渡しします。</p>
+                    <h1>Rongoパスコードについて</h1>
+                    <p>ログインパスコードを次の通りです。</p>
                     <!-- Action -->
                     <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
@@ -213,7 +213,7 @@
                 <tr>
                   <td class="content-cell">
                     <p class="sub center">
-                      Longo, Inc.
+                      Rongo, Inc.
                     </p>
                   </td>
                 </tr>
