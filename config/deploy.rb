@@ -235,7 +235,7 @@ namespace :laravel do
         after  'deploy:updating', 'laravel:ensure_acl_paths_exist'
         before 'deploy:updated',  'deploy:set_permissions:acl'
         before 'deploy:updated',  'laravel:upload_dotenv_file'
-        after  'composer:run',    'laravel:storage_link'
+        #after  'composer:run',    'laravel:storage_link'
         after  'deploy:updated',    'laravel:config_cache'
         after  'deploy:updated',    'laravel:route_cache'
         after  'deploy:updated',    'laravel:routes_clear'
