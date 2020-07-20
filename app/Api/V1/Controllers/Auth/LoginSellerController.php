@@ -2,9 +2,11 @@
 
 namespace App\Api\V1\Controllers\Auth;
 
+use Mail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Api\V1\Requests\LoginSellerRequest;
+use App\Mail\EmailVerificationCode;
 use Illuminate\Http\Request;
 use JWTAuth;
 //Models
@@ -85,16 +87,33 @@ class LoginSellerController extends AuthController
         // email:null,
         // id:null,
         // token:null,
-        $follows = $user->rStore->rUsersFollow()->where('type', 1)->count();
-        $evalutionLikes = $user->rStore->rEvaluationByType(1);
-        $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
-        $evalutionDislikes = $user->rStore->rEvaluationByType(3);
+
+        $store = $user->rStore;
+
+        if ($store != NULL) {
+            $follows = $store->rUsersFollow()->where('type', 1)->count();
+            $evalutionLikes = $user->rStore->rEvaluationByType(1);
+            $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
+            $evalutionDislikes = $user->rStore->rEvaluationByType(3);
         
-        $evalution = [
-            'like' => ($evalutionLikes == NULL) ? 0 : $evalutionLikes->count(),
-            'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
-            'dislike' => ($evalutionDislikes == NULL) ? 0 : $evalutionDislikes->count()
-        ];
+            $evalution = [
+                'like' => ($evalutionLikes == NULL) ? 0 : $evalutionLikes->count(),
+                'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
+                'dislike' => ($evalutionDislikes == NULL) ? 0 : $evalutionDislikes->count()
+            ];
+        } else {
+            $evalution = [
+                'like' => 0,
+                'notBad' => 0,
+                'dislike' => 0
+            ];
+        }
+        // $follows = $user->rStore->rUsersFollow()->where('type', 1)->count();
+        // $evalutionLikes = $user->rStore->rEvaluationByType(1);
+        // $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
+        // $evalutionDislikes = $user->rStore->rEvaluationByType(3);
+        
+        
 
         $response['userInfo'] = [
             'id' => $user->id,
@@ -104,6 +123,7 @@ class LoginSellerController extends AuthController
             'numFollowers' => $follows,
             'evaluation' => $evalution
         ];
+
         $response['result'] = 0;
         $response['token'] = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(7)->timestamp]);
 
@@ -121,5 +141,7 @@ class LoginSellerController extends AuthController
         $user->token_2fa = $pin;
         $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
         $user->save();
+
+        Mail::to($user->email)->send(new EmailVerificationCode($pin));
     }
 }
