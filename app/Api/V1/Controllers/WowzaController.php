@@ -13,8 +13,8 @@ class WowzaController extends Controller
     private $host = 'api.cloud.wowza.com';
     private $path = '/api/v1.5/';
     private $endPoint = 'live_streams';
-    protected $wscApiKey = '4YaxMbTSQnARQK0vUVvZH2pz7h4GxfDgVUeQ3trQr0vCV3ywhWQjcE7UqJyf3505';
-    protected $wscAccessKey = '6RUhRjs2FAtzJiQDjWVhrH5ZMsSqk7vV3z6rHch5LzT3LQPvp1q6F27Csrrk3416';
+    protected $wscApiKey = '56a5hd69baCdxQWP31WVAPUul4OHQCdbge4O6wefAs03Uq7OQ4mkxCTaOjG7311d';
+    protected $wscAccessKey = 'Dk8F0DgRwr7bRrrI2S7zdqf6GBroQq7rgaaorlQcPMtDvuODvNFGQKslb3g3351b';
     private $config = ['live_stream' => [
         "aspect_ratio_height" => 1080,
         "aspect_ratio_width" => 1920,
