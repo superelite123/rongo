@@ -200,8 +200,7 @@
                           </div>
                         </td>
                       </tr>
-                    </table>
-                    <p>ありがとう,<br>Rongo Inc</p>
+                    </table>                   
                   </td>
                 </tr>
               </table>
@@ -213,7 +212,7 @@
                 <tr>
                   <td class="content-cell">
                     <p class="sub center">
-                      Rongo, Inc.
+                     
                     </p>
                   </td>
                 </tr>

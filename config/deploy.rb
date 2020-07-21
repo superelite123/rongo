@@ -75,7 +75,8 @@ set :laravel_5_acl_paths, [
       'storage/framework/cache',
       'storage/framework/sessions',
       'storage/framework/views',
-      'storage/logs'
+      'storage/logs',
+      'storage/app/public/ProductPortfolio'
     ]
 
 namespace :laravel do
