@@ -134,6 +134,7 @@ class LiveController extends WowzaController
         $live = Live::find($request->id);
         if($live == null) return -1;
         $live->status_id=2;
+        $this->stop($live->stream_id);
         $live->save();
     }
 
@@ -157,7 +158,7 @@ class LiveController extends WowzaController
     public function stop($id)
     {
         //$streamID = Live::find($id)->stream_id;
-        $status = $this->stopLiveStream('vwpq3lr1');
+        $status = $this->stopLiveStream($id);
         return $status;
     }
     public function publish($id)
