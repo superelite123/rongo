@@ -49,7 +49,7 @@ class LiveController extends WowzaController
         //Create LiveStream
         //$this->createLiveStream($request->title)
         $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
-        return $liveStreamReponse;
+        
         $liveStreamReponse = $liveStreamReponse['live_stream'];
         // $liveStreamReponse = ['id' => '23232df',
         //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
@@ -99,7 +99,7 @@ class LiveController extends WowzaController
         $live->save();
         //Save Thumbnail
         $filename = $live->id.'.png';
-        if(!Storage::disk('live_photo')->put($filename, $request->thumbnail ) )
+        if(!Storage::disk('live_photo')->put($filename, base64_decode($request->thumbnail) ) )
         {
             return -1;
         }

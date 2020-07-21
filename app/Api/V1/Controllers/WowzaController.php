@@ -45,8 +45,8 @@ class WowzaController extends Controller
     public function startLiveStream($streamID)
     {
         $this->endPoint = 'live_streams/'.$streamID.'/start';
-        $this->getHttpRequest()->put($this->getURL());
-        return $response;
+        return $this->getHttpRequest()->put($this->getURL());
+        
     }
     public function stopLiveStream($streamID)
     {
