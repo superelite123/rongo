@@ -84,6 +84,7 @@ $api->version('v1', function (Router $api) {
         $api->get('getStore','App\\Api\\V1\\Controllers\\UserStoreController@index');
         $api->post('saveStore','App\\Api\\V1\\Controllers\\UserStoreController@store');
         $api->post('registerAccount', 'App\\Api\\V1\\Controllers\\UserController@registerAccountInfo');
+        $api->post('changeDevice', 'App\\Api\\V1\\Controllers\\UserController@changeUserDeivce');
     });
     /**
      * Address

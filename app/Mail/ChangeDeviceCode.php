@@ -29,7 +29,6 @@ class ChangeDeviceCode extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
         $mail = $this->view('emails.changeDeviceCode',['verification_code' => $this->code])
                      ->subject('機種変更コード');
         return $mail;

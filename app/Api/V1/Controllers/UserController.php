@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use Mail;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserSetting;
