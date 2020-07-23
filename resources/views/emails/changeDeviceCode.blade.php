@@ -5,7 +5,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Rongo パスコード</title>
+  <title>機種変更コード</title>
   <style type="text/css" rel="stylesheet" media="all">
     /* Base ------------------------------ */
     *:not(br):not(tr):not(html) {
@@ -189,8 +189,8 @@
                 <!-- Body content -->
                 <tr>
                   <td class="content-cell">
-                    <h1>Rongoパスコードについて</h1>
-                    <p>ログインパスコードを次の通りです。</p>
+                    <h1>機種変更コードについて</h1>
+                    <p>機種変更コードを次の通りです。</p>
                     <!-- Action -->
                     <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
