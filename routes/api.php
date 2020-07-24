@@ -32,6 +32,7 @@ $api->version('v1', function (Router $api) {
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
         $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@addLikeProduct');
+        $api->post('product/store', 'App\\Api\\V1\\Controllers\\ProductController@store');
         $api->post('product/click', 'App\\Api\\V1\\Controllers\\ProductClickController@store');
         $api->get('products/ranking', 'App\\Api\\V1\\Controllers\\ProductController@rankings');
         /**

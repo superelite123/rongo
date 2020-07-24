@@ -97,7 +97,18 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-
+        $product = Product::find($request->id) == null?new Product:Product::find($request->id);
+        $product->label = $request->label;
+        $product->store_id = auth()->user()->rStore->id;
+        $product->number = $request->number;
+        $product->description = $request->description;
+        $product->qty = $request->qty;
+        $product->price = $request->price;
+        $product->ship_dayas = $request->ship_days;
+        $product->shipper_id = $request->shipper_id;
+        $product->shipping_fee = $request->dFee;
+        $product-save();
+        //save portfolios
     }
 
     public function update(Request $request,$id)

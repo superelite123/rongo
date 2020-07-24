@@ -13,8 +13,8 @@ class WowzaController extends Controller
     private $host = 'api.cloud.wowza.com';
     private $path = '/api/v1.5/';
     private $endPoint = 'live_streams';
-    protected $wscApiKey = 'HBc8IndlMsdN4CPIWzSH1pWTDrKr2XErJAaFHTGsH7P37y5InaqfXBjq8mD33201';
-    protected $wscAccessKey = 'PEVJw0zBw4MQUMS92jG8GTB6JRHedCkdSPzZyK6epeumZSowe0TnDeuPFpM5332d';
+    protected $wscApiKey = 'KO6kPxQiOpXbve9tukGZT328My2LfMcLkZUPbQRlXmZNyulG3r02CsouFsxQ352e';
+    protected $wscAccessKey = 'Ry4wVK0iZSkD97S7ry5LzxLaLnPCzRQCuZSQQrgoBfxGZGqVyTzfFL9Zr8HD3451';
     private $config = ['live_stream' => [
         "aspect_ratio_height" => 1080,
         "aspect_ratio_width" => 1920,
@@ -45,8 +45,8 @@ class WowzaController extends Controller
     public function startLiveStream($streamID)
     {
         $this->endPoint = 'live_streams/'.$streamID.'/start';
-        $this->getHttpRequest()->put($this->getURL());
-        return $response;
+        return $this->getHttpRequest()->put($this->getURL());
+
     }
     public function stopLiveStream($streamID)
     {
