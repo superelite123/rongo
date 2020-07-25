@@ -5,7 +5,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Rongo 確認コード</title>
+  <title>Rongo パスコード</title>
   <style type="text/css" rel="stylesheet" media="all">
     /* Base ------------------------------ */
     *:not(br):not(tr):not(html) {
@@ -200,8 +200,7 @@
                           </div>
                         </td>
                       </tr>
-                    </table>
-                    <p>ありがとう,<br>Rongo Inc</p>
+                    </table>                   
                   </td>
                 </tr>
               </table>
@@ -213,7 +212,7 @@
                 <tr>
                   <td class="content-cell">
                     <p class="sub center">
-                      Rongo, Inc.
+                     
                     </p>
                   </td>
                 </tr>

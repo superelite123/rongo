@@ -69,6 +69,7 @@ $api->version('v1', function (Router $api) {
         $api->post('register', 'App\\Api\\V1\\Controllers\\LiveController@register');
         $api->post('register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
         $api->post('add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
+
     });
     /**
      * User Detail
@@ -87,6 +88,8 @@ $api->version('v1', function (Router $api) {
         $api->get('getStore','App\\Api\\V1\\Controllers\\UserStoreController@index');
         $api->post('saveStore','App\\Api\\V1\\Controllers\\UserStoreController@store');
         $api->post('changePassword','App\\Api\\V1\\Controllers\\UserController@changePassword');
+        $api->post('registerAccount', 'App\\Api\\V1\\Controllers\\UserController@registerAccountInfo');
+        $api->post('changeDevice', 'App\\Api\\V1\\Controllers\\UserController@changeUserDeivce');
     });
     /**
      * Address

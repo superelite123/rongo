@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use Mail;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserSetting;
@@ -10,6 +11,8 @@ use App\State;
 use Storage;
 use App\Traits\LoadList;
 use Hash;
+use App\Mail\ChangeDeviceCode;
+
 class UserController extends Controller
 {
     use LoadList;
@@ -149,6 +152,26 @@ class UserController extends Controller
         $response['email'] = $user->email;
         return response()->json($response);
     }
+
+    public function registerAccountInfo(Request $request) {
+        $user = auth()->user();
+
+        $response = [];
+        $user->email            = $request->email;
+        $user->firstname_h      = $request->firstname_h;
+        $user->lastname_h       = $request->lastname_h;
+        $user->firstname_k      = $request->firstname_k;
+        $user->lastname_k       = $request->lastname_k;
+        $user->phone_number     = $request->phone_number;
+
+        $user->save();
+
+        $response['success'] = 1;
+        $response['user'] = $this->toArray( $user );
+
+        return response()->json($response);
+    }
+
     public function getInviteCode()
     {
         $user = auth()->user();
@@ -195,5 +218,21 @@ class UserController extends Controller
         $user->password = Hash::make($password);
         $user->save();
         return response()->json($response);
+    }
+    /**
+     * @Generate Two factor pin code
+     */
+    public function changeUserDeivce(Request $request) {
+        $user = auth()->user();
+
+        $pin = mt_rand(100000, 999999);
+
+        $user->password = bcrypt($pin);
+        // $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
+        $user->save();
+
+        Mail::to($user->email)->send(new ChangeDeviceCode($pin));
+
+        return response()->json([ 'success' => true ]);
     }
 }

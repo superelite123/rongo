@@ -30,7 +30,7 @@ class EmailVerificationCode extends Mailable
     public function build()
     {
         $mail = $this->view('emails.verificationCode',['verification_code' => $this->code])
-                     ->subject('Rongo 確認コード');
+                     ->subject('Rongoパスコード');
         return $mail;
     }
 }

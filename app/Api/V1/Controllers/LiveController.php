@@ -46,20 +46,20 @@ class LiveController extends WowzaController
             'cid' => null,
             'cadmin_id' => null
         ];
-        // $liveStreamReponse = [];
-        // //Create LiveStream
-        // //$this->createLiveStream($request->title)
-        // $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
-        // $liveStreamReponse = $liveStreamReponse['live_stream'];
+        $liveStreamReponse = [];
+        //Create LiveStream
+        //$this->createLiveStream($request->title)
+        $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
 
-        $liveStreamReponse = ['id' => '23232df',
-                              'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
-                              'source_connection_information' => [
-                                'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                                'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                                'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                              ]
-        ];
+        $liveStreamReponse = $liveStreamReponse['live_stream'];
+        // $liveStreamReponse = ['id' => '23232df',
+        //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
+        //                       'source_connection_information' => [
+        //                         'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+        //                         'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+        //                         'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+        //                       ]
+        // ];
 
         /**
          * Create Chat Channel
@@ -138,6 +138,7 @@ class LiveController extends WowzaController
         if($live == null) return -1;
 
         $live->status_id=2;
+        $this->stop($live->stream_id);
         $live->save();
         return $this->stop($live->stream_id);;
     }

@@ -75,7 +75,8 @@ set :laravel_5_acl_paths, [
       'storage/framework/cache',
       'storage/framework/sessions',
       'storage/framework/views',
-      'storage/logs'
+      'storage/logs',
+      'storage/app/public/ProductPortfolio'
     ]
 
 namespace :laravel do
@@ -235,7 +236,8 @@ namespace :laravel do
         after  'deploy:updating', 'laravel:ensure_acl_paths_exist'
         before 'deploy:updated',  'deploy:set_permissions:acl'
         before 'deploy:updated',  'laravel:upload_dotenv_file'
-        #after  'composer:run',    'laravel:storage_link'
+        before 'composer:run',      'laravel:config_cache'
+        after  'composer:run',    'laravel:storage_link'
         after  'deploy:updated',    'laravel:config_cache'
         after  'deploy:updated',    'laravel:route_cache'
         after  'deploy:updated',    'laravel:routes_clear'
