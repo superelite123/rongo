@@ -42,6 +42,7 @@ class LiveController extends WowzaController
     {
         //Use logged in user as Seller
         $user = auth()->user();
+        $response = [];
         $response = [
             'success' => 1,
             'cid' => null,
@@ -51,7 +52,7 @@ class LiveController extends WowzaController
         //Create LiveStream
         //$this->createLiveStream($request->title)
         $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
-        
+
         $liveStreamReponse = $liveStreamReponse['live_stream'];
         // $liveStreamReponse = ['id' => '23232df',
         //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
@@ -65,39 +66,40 @@ class LiveController extends WowzaController
         /**
          * Create Chat Channel
          */
-        // $client = new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
-        // //Channel ID
-        // $cid = uniqid();
-        // $cadmin = [
-        //     'id' => $user->chat_id,
-        //     'role' => 'admin',
-        //     'name' => 'admin',
-        // ];
-        // $client->updateUser($cadmin);
-        // $channelConfig = [
-        //                   'name' => $request->title,
-        //                   'typing_events' => true,
-        //                   'read_events' => true,
-        //                   'connect_events' => true,
-        //                  ];
-        // // Instantiate a livestream type channel with id homeShopping
-        // $channel = $client->Channel("livestream", $cid, $channelConfig);
-        // unset($channelConfig['name']);
-        // $channelType = $client->updateChannelType('livestream',$channelConfig);
-        // //print_r($channelType);
-        // // Create the channel
-        // $state = $channel->create($cadmin['id']);
+        $client = new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
+        //Channel ID
+        $cid = uniqid();
+        $cadmin = [
+            'id' => $user->chat_id,
+            'role' => 'admin',
+            'name' => 'admin',
+        ];
+        $client->updateUser($cadmin);
+        $channelConfig = [
+                          'name' => $request->title,
+                          'typing_events' => true,
+                          'read_events' => true,
+                          'connect_events' => true,
+                         ];
+        // Instantiate a livestream type channel with id homeShopping
+        $channel = $client->Channel("livestream", $cid, $channelConfig);
+        unset($channelConfig['name']);
+        $channelType = $client->updateChannelType('livestream',$channelConfig);
+        //print_r($channelType);
+        // Create the channel
+        $state = $channel->create($cadmin['id']);
         //Create Live
         $live = new Live;
         $live->title        = $request->title;
-        $live->store_id     = $user->rStore->id;
+        $live->store_id     = 1;
         $live->tag_id       = $this->registerTag($request->tag);
         $live->status_id    = 1;
         $live->stream_id    = $liveStreamReponse['id'];
         $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
         $live->photo = 'aa.png';
-        // $live->cid          = $cid;
-        // $live->cadmin_id    = $cadmin['id'];
+        $live->cid          = $cid;
+        $live->cadmin_id    = $cadmin['id'];
+
         $live->save();
         //Save Thumbnail
         $filename = $live->id.'.png';
@@ -107,24 +109,25 @@ class LiveController extends WowzaController
         }
         $live->photo        = $filename;
         $live->save();
+
         $this->startLiveStream($liveStreamReponse['id']);
         $productInsertData = [];
-        foreach($request->products as $_product)
-        {
-            $productInsertData[] = new LiveHasProduct([
-                'product_id' => $_product['id'],
-                'qty' => $_product['addQty'],
-                'sold_qty' => 0
-            ]);
-            $product = Product::find($_product['id']);
-            $product->qty -= $_product['addQty'];
-        }
-        $live->rProducts()->saveMany($productInsertData);
+        // foreach($request->products as $_product)
+        // {
+        //     $productInsertData[] = new LiveHasProduct([
+        //         'product_id' => $_product['id'],
+        //         'qty' => $_product['addQty'],
+        //         'sold_qty' => 0
+        //     ]);
+        //     $product = Product::find($_product['id']);
+        //     $product->qty -= $_product['addQty'];
+        // }
+        // $live->rProducts()->saveMany($productInsertData);
 
-        $response = [];
         $response['id']         = $live->id;
         $response['liveData']    = $liveStreamReponse['source_connection_information'];
         $response['hls_url'] = $live->hls_url;
+        $response['channel'] = $channel;
         // $response['cid']            = $live->cid;
         // $response['cadmin_id']      = $live->cadmin_id;
 
@@ -140,9 +143,11 @@ class LiveController extends WowzaController
     {
         $live = Live::find($request->id);
         if($live == null) return -1;
+
         $live->status_id=2;
         $this->stop($live->stream_id);
         $live->save();
+        return $this->stop($live->stream_id);;
     }
 
     public function registerTag($tag)

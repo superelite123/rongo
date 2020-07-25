@@ -52,6 +52,7 @@ class StoreController extends Controller
     public function follows($type) {
         $user = auth()->user();
         $store = $user->rStore;
+        return $store->id;
         $follows = $store->rUsersFollow()->where('type', $type)->get();
 
         foreach($follows as $follow)
@@ -72,7 +73,7 @@ class StoreController extends Controller
     public function products($type) {
         $user = auth()->user();
         $store = $user->rStore;
-        
+
         $options['status'] = [];
         if ($type == 0) {
             $options['status'][0] = Config::get('constants.pStatus.draft');
@@ -86,13 +87,13 @@ class StoreController extends Controller
         }
 
         $options['store_id'] = $store->id;
-        
+
         $response['products']       = $this->loadProductsWithStore($options);
 
         return response()->json( $response );
     }
 
-    public function liveStreams($type) 
+    public function liveStreams($type)
     {
         $user = auth()->user();
         $store = $user->rStore;

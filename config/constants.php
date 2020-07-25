@@ -20,7 +20,7 @@ return [
         'CUSTOMER' => 2
     ],
     'CHAT' => [
-        'STREAM_KEY' => 'p9qfa7j59dzs',
-        'SECERT_KEY' => '7y97rtawxje8saxba23xdh53pv9tnbbrfnsgxer5ces2q555v6vx5fdjuztqsj77',
+        'STREAM_KEY' => 'at5dhjq8gtxz',
+        'SECERT_KEY' => 'vu4bs8rrj7mztycujf2tknda7xwdv2gjdptesrybz76h9qkprn6qandu7hpd3scg',
     ]
 ];

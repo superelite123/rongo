@@ -10,6 +10,7 @@ use App\Address;
 use App\State;
 use Storage;
 use App\Traits\LoadList;
+use Hash;
 use App\Mail\ChangeDeviceCode;
 
 class UserController extends Controller
@@ -201,6 +202,23 @@ class UserController extends Controller
         return $response;
     }
 
+    public function changePassword(Request $request)
+    {
+        $password = $request->password;
+        $user = auth()->user();
+        $response = ['success' => 1];
+        if(Hash::check($password, $user->password))
+        {
+            $response['success'] = -1;
+        }
+        else
+        {
+            $response['success'] = -2;
+        }
+        $user->password = Hash::make($password);
+        $user->save();
+        return response()->json($response);
+    }
     /**
      * @Generate Two factor pin code
      */
