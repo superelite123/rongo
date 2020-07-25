@@ -19,6 +19,8 @@ use GetStream\StreamChat\Client;
 use Config;
 use App\Traits\LoadList;
 use App\Events\LikeProductLiving;
+use App\Notifications\FollowStoreLiveNotification;
+
 class LiveController extends WowzaController
 {
     use LoadList;
@@ -126,6 +128,11 @@ class LiveController extends WowzaController
         // $response['cid']            = $live->cid;
         // $response['cadmin_id']      = $live->cadmin_id;
 
+        $follows = $user->rStore->rUsersFollow;
+        foreach ($follows as $follow) {
+            $follows->rUser->notify(new FollowStoreLiveNotification());
+        }
+
         return response()->json($response);
     }
 
@@ -209,7 +216,7 @@ class LiveController extends WowzaController
             $item['label']      = $product->label;
             $item['price']      = $product->price;
             $item['status']     = $product->status_id;
-            $item['quantity']        = $product->qty;
+            $item['quantity']   = $product->qty;
             $item['numLikes']   = $product->rUserLike()->count();
             $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
             $item['number']     = $product->number;
