@@ -43,12 +43,12 @@ class Product extends Model
         $thumanail = $this->rPortfolio()->where('order','=', 1)->first();
         if($thumanail != null)
         {
-            return $thumanail->filename;
+            return $this->id.'/'.$thumanail->filename;
         }
         else
         {
             $thumanail = $this->rPortfolio()->first();
-            return $thumanail != null?$thumanail->filename:'default.png';
+            return $thumanail != null?$this->id.'/'.$thumanail->filename:'default.png';
         }
     }
 

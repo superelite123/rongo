@@ -30,10 +30,13 @@ $api->version('v1', function (Router $api) {
          * Product
          */
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
+        $api->get('product/getAdminList/{type}', 'App\\Api\\V1\\Controllers\\ProductController@getAdminList');
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
+        $api->get('product/edit/{id}', 'App\\Api\\V1\\Controllers\\ProductController@edit');
         $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@addLikeProduct');
         $api->post('product/store', 'App\\Api\\V1\\Controllers\\ProductController@store');
         $api->post('product/click', 'App\\Api\\V1\\Controllers\\ProductClickController@store');
+        $api->post('product/delete', 'App\\Api\\V1\\Controllers\\ProductController@delete');
         $api->get('products/ranking', 'App\\Api\\V1\\Controllers\\ProductController@rankings');
         /**
          * Store

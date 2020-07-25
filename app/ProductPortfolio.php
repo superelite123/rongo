@@ -8,4 +8,5 @@ class ProductPortfolio extends Model
 {
     //
     protected $table = 'product_portfolio';
+    protected $fillable = ['filename','order'];
 }
