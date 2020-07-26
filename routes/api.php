@@ -88,9 +88,11 @@ $api->version('v1', function (Router $api) {
         $api->get('getStore','App\\Api\\V1\\Controllers\\UserStoreController@index');
         $api->post('saveStore','App\\Api\\V1\\Controllers\\UserStoreController@store');
         $api->post('changePassword','App\\Api\\V1\\Controllers\\UserController@changePassword');
+        $api->post('changeEmail','App\\Api\\V1\\Controllers\\UserController@changeEmail');
         $api->post('registerAccount', 'App\\Api\\V1\\Controllers\\UserController@registerAccountInfo');
         $api->post('changeDevice', 'App\\Api\\V1\\Controllers\\UserController@changeUserDeivce');
     });
+    $api->get('confirmEmailChange', 'App\\Api\\V1\\Controllers\\UserController@confirmEmailChange')->middleware('jwt.auth');
     /**
      * Address
      */
@@ -113,7 +115,11 @@ $api->version('v1', function (Router $api) {
         $api->get('cards','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
         $api->post('add_card','App\\Api\\V1\\Controllers\\Payment\\CardController@store');
         $api->get('transactions', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getTransactions');
-        $api->get('sellHistory', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getSellHistory');
+
+    });
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'sell_history'], function(Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\SellHistoryController@index');
+        $api->post('/getDetail', 'App\\Api\\V1\\Controllers\\SellHistoryController@getDetail');
     });
     /**
      * Notification

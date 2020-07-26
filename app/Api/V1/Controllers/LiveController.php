@@ -133,7 +133,7 @@ class LiveController extends WowzaController
 
         $follows = $user->rStore->rUsersFollow;
         foreach ($follows as $follow) {
-            $follows->rUser->notify(new FollowStoreLiveNotification());
+            $follow->rUser->notify(new FollowStoreLiveNotification());
         }
 
         return response()->json($response);

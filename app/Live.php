@@ -36,7 +36,11 @@ class Live extends Model
     {
         return $this->hasMany(LiveHasProduct::class,'live_id');
     }
+    public function getTagLabelAttribute()
+    {
+        return $this->rTag != null?$this->rTag->label:'';
 
+    }
     public function getnTotalUsersAttribute()
     {
         return $this->rUsers()->count();
