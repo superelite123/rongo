@@ -16,11 +16,6 @@ trait LoadList
     use CommonFunction;
     public function loadProducts($options)
     {
-
-        $options['status'] = [];
-        $options['status'][0] = Config::get('constants.pStatus.staged');
-        $options['status'][1] = Config::get('constants.pStatus.restaged');
-        $options['status'][2] = Config::get('constants.pStatus.sold');
         $cond = Product::whereIn('status_id',$options['status']);
         //specify the store
         if(isset($options['store_id']))
@@ -51,8 +46,11 @@ trait LoadList
         {
             $item['id']         = $product->id;
             $item['label']      = $product->label;
+            $item['number']     = $product->number;
+            $item['quantity']   = $product->qty;
             $item['price']      = $product->price;
             $item['status']     = $product->status_id;
+            $item['numLikes']   = $product->rUserLike()->count();
             $item['isLike']     = $product->rUserLike()->where('user_id',auth()->user()->id)->get()->count() > 0?1:0;
             $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
             $item['storeName']  = $product->StoreInfo['storeName'];
@@ -87,7 +85,7 @@ trait LoadList
             $item['status']     = $product->status_id;
             $item['quantity']   = $product->qty;
             $item['numLikes']   = $product->rUserLike()->count();
-            $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
+            $item['thumbnail']  = $thumbnailRootUrl.$product->id.'/'.$product->Thumbnail();
             $item['number']  = $product->number;
 
             $json[] = $item;

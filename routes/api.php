@@ -30,9 +30,13 @@ $api->version('v1', function (Router $api) {
          * Product
          */
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
+        $api->get('product/getAdminList/{type}', 'App\\Api\\V1\\Controllers\\ProductController@getAdminList');
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
+        $api->get('product/edit/{id}', 'App\\Api\\V1\\Controllers\\ProductController@edit');
         $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@addLikeProduct');
+        $api->post('product/store', 'App\\Api\\V1\\Controllers\\ProductController@store');
         $api->post('product/click', 'App\\Api\\V1\\Controllers\\ProductClickController@store');
+        $api->post('product/delete', 'App\\Api\\V1\\Controllers\\ProductController@delete');
         $api->get('products/ranking', 'App\\Api\\V1\\Controllers\\ProductController@rankings');
         /**
          * Store
@@ -65,7 +69,6 @@ $api->version('v1', function (Router $api) {
         $api->post('register', 'App\\Api\\V1\\Controllers\\LiveController@register');
         $api->post('register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
         $api->post('add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
-        
     });
     /**
      * User Detail
@@ -83,9 +86,12 @@ $api->version('v1', function (Router $api) {
         $api->post('deleteUser', 'App\\Api\\V1\\Controllers\\UserController@deleteUser');
         $api->get('getStore','App\\Api\\V1\\Controllers\\UserStoreController@index');
         $api->post('saveStore','App\\Api\\V1\\Controllers\\UserStoreController@store');
+        $api->post('changePassword','App\\Api\\V1\\Controllers\\UserController@changePassword');
+        $api->post('changeEmail','App\\Api\\V1\\Controllers\\UserController@changeEmail');
         $api->post('registerAccount', 'App\\Api\\V1\\Controllers\\UserController@registerAccountInfo');
         $api->post('changeDevice', 'App\\Api\\V1\\Controllers\\UserController@changeUserDeivce');
     });
+    $api->get('confirmEmailChange', 'App\\Api\\V1\\Controllers\\UserController@confirmEmailChange')->middleware('jwt.auth');
     /**
      * Address
      */
@@ -108,13 +114,18 @@ $api->version('v1', function (Router $api) {
         $api->get('cards','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
         $api->post('add_card','App\\Api\\V1\\Controllers\\Payment\\CardController@store');
         $api->get('transactions', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getTransactions');
-        $api->get('sellHistory', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getSellHistory');
+
+    });
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'sell_history'], function(Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\SellHistoryController@index');
+        $api->post('/getDetail', 'App\\Api\\V1\\Controllers\\SellHistoryController@getDetail');
     });
     /**
      * Notification
      */
     $api->group(['middleware' => 'jwt.auth','prefix' => 'notification'], function(Router $api) {
         $api->get('/','App\\Api\\V1\\Controllers\\NotificationController@index');
+        $api->post('/{id}','App\\Api\\V1\\Controllers\\NotificationController@markAsRead');
     });
     /**
      * News

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 //Load Model
 use App\User;
 use App\Live;
+use App\Notification;
 use App\LiveHasUser;
 use App\LiveHasProduct;
 use App\Product;
@@ -19,6 +20,8 @@ use GetStream\StreamChat\Client;
 use Config;
 use App\Traits\LoadList;
 use App\Events\LikeProductLiving;
+use App\Notifications\FollowStoreLiveNotification;
+
 class LiveController extends WowzaController
 {
     use LoadList;
@@ -40,6 +43,7 @@ class LiveController extends WowzaController
     {
         //Use logged in user as Seller
         $user = auth()->user();
+        $response = [];
         $response = [
             'success' => 1,
             'cid' => null,
@@ -49,7 +53,7 @@ class LiveController extends WowzaController
         //Create LiveStream
         //$this->createLiveStream($request->title)
         $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
-        
+
         $liveStreamReponse = $liveStreamReponse['live_stream'];
         // $liveStreamReponse = ['id' => '23232df',
         //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
@@ -63,39 +67,40 @@ class LiveController extends WowzaController
         /**
          * Create Chat Channel
          */
-        // $client = new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
-        // //Channel ID
-        // $cid = uniqid();
-        // $cadmin = [
-        //     'id' => $user->chat_id,
-        //     'role' => 'admin',
-        //     'name' => 'admin',
-        // ];
-        // $client->updateUser($cadmin);
-        // $channelConfig = [
-        //                   'name' => $request->title,
-        //                   'typing_events' => true,
-        //                   'read_events' => true,
-        //                   'connect_events' => true,
-        //                  ];
-        // // Instantiate a livestream type channel with id homeShopping
-        // $channel = $client->Channel("livestream", $cid, $channelConfig);
-        // unset($channelConfig['name']);
-        // $channelType = $client->updateChannelType('livestream',$channelConfig);
-        // //print_r($channelType);
-        // // Create the channel
-        // $state = $channel->create($cadmin['id']);
+        $client = new Client(Config::get('constants.CHAT.STREAM_KEY'),Config::get('constants.CHAT.SECERT_KEY'));
+        //Channel ID
+        $cid = uniqid();
+        $cadmin = [
+            'id' => $user->chat_id,
+            'role' => 'admin',
+            'name' => 'admin',
+        ];
+        $client->updateUser($cadmin);
+        $channelConfig = [
+                          'name' => $request->title,
+                          'typing_events' => true,
+                          'read_events' => true,
+                          'connect_events' => true,
+                         ];
+        // Instantiate a livestream type channel with id homeShopping
+        $channel = $client->Channel("livestream", $cid, $channelConfig);
+        unset($channelConfig['name']);
+        $channelType = $client->updateChannelType('livestream',$channelConfig);
+        //print_r($channelType);
+        // Create the channel
+        $state = $channel->create($cadmin['id']);
         //Create Live
         $live = new Live;
         $live->title        = $request->title;
-        $live->store_id     = $user->rStore->id;
+        $live->store_id     = 1;
         $live->tag_id       = $this->registerTag($request->tag);
         $live->status_id    = 1;
         $live->stream_id    = $liveStreamReponse['id'];
         $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
         $live->photo = 'aa.png';
-        // $live->cid          = $cid;
-        // $live->cadmin_id    = $cadmin['id'];
+        $live->cid          = $cid;
+        $live->cadmin_id    = $cadmin['id'];
+
         $live->save();
         //Save Thumbnail
         $filename = $live->id.'.png';
@@ -105,26 +110,72 @@ class LiveController extends WowzaController
         }
         $live->photo        = $filename;
         $live->save();
+
         $this->startLiveStream($liveStreamReponse['id']);
         $productInsertData = [];
-        foreach($request->products as $_product)
-        {
-            $productInsertData[] = new LiveHasProduct([
-                'product_id' => $_product['id'],
-                'qty' => $_product['addQty'],
-                'sold_qty' => 0
-            ]);
-            $product = Product::find($_product['id']);
-            $product->qty -= $_product['addQty'];
-        }
-        $live->rProducts()->saveMany($productInsertData);
 
-        $response = [];
+        // foreach($request->products as $_product)
+        // {
+        //     $productInsertData[] = new LiveHasProduct([
+        //         'product_id' => $_product['id'],
+        //         'qty' => $_product['addQty'],
+        //         'sold_qty' => 0
+        //     ]);
+        //     $product = Product::find($_product['id']);
+        //     $product->qty -= $_product['addQty'];
+        // }
+        // $live->rProducts()->saveMany($productInsertData);
+
         $response['id']         = $live->id;
         $response['liveData']    = $liveStreamReponse['source_connection_information'];
-        $response['hls_url'] = $live->hls_url;
+        $response['hls_url']    = $live->hls_url;
+        $response['channel']    = $channel;
         // $response['cid']            = $live->cid;
         // $response['cadmin_id']      = $live->cadmin_id;
+
+        $follows = $user->rStore->rUsersFollow;
+        foreach ($follows as $follow) {
+            $customer = $follow->rUser;
+
+            $setting = $customer->rSetting->where('key', 'notification_store_live')->first();
+            
+            if ($setting->value) {
+                $notification = new Notification;
+                $notification->title = "フォロー中のストアのライブ配信";
+                $notification->body = $user->nickname."で新しいライブ配信放送を始めました。";
+                $notification->icon = asset(Storage::url('LivePhoto')).'/'.$filename;
+                $notification->receiver = $customer->id;
+                $notification->live_id = $live->id;
+                $notification->store_id = $user->rStore->id;
+                $notification->type = 4;
+                $notification->save();
+
+                $customer->notify(new FollowStoreLiveNotification($notification));
+            }
+        }
+
+        $products = $live->rProducts;
+        foreach ($products as $product) {
+            $likers = $product->rUserLike;
+
+            foreach ($likers as $liker) {
+                $setting = $customer->rSetting->where('key', 'notification_product_live')->first();
+
+                if ($setting->value) {
+                    $notification = new Notification;
+                    $notification->title = "お気に入り商品のライブ配信";
+                    $notification->body = "お気に入り商品が配信に追加されました。";
+                    $notification->icon = asset(Storage::url('ProductPortfolio/').$product->Thumbnail());
+                    $notification->receiver = $customer->id;
+                    $notification->live_id = $live->id;
+                    $notification->product_id = $product->id;
+                    $notification->type = 3;
+                    $notification->save();
+    
+                    $customer->notify(new FollowStoreLiveNotification($notification));
+                }
+            }
+        }
 
         return response()->json($response);
     }
@@ -133,9 +184,11 @@ class LiveController extends WowzaController
     {
         $live = Live::find($request->id);
         if($live == null) return -1;
+
         $live->status_id=2;
         $this->stop($live->stream_id);
         $live->save();
+        return $this->stop($live->stream_id);;
     }
 
     public function registerTag($tag)
@@ -209,7 +262,7 @@ class LiveController extends WowzaController
             $item['label']      = $product->label;
             $item['price']      = $product->price;
             $item['status']     = $product->status_id;
-            $item['quantity']        = $product->qty;
+            $item['quantity']   = $product->qty;
             $item['numLikes']   = $product->rUserLike()->count();
             $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
             $item['number']     = $product->number;
@@ -392,5 +445,11 @@ class LiveController extends WowzaController
         /**Send Push Notification */
         event(new LikeProductLiving($live,$product));
         return response()->json($response);
+    }
+
+    public function testPushNotification(Request $request) {
+        $user = auth()->user();
+        $user->notify(new FollowStoreLiveNotification());
+        return response()->json(['success' => true]);
     }
 }

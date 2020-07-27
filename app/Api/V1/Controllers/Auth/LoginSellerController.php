@@ -90,13 +90,13 @@ class LoginSellerController extends AuthController
 
         $store = $user->rStore;
         $follows = 0;
-        
+
         if ($store != NULL) {
             $follows = $store->rUsersFollow()->where('type', 1)->count();
             $evalutionLikes = $user->rStore->rEvaluationByType(1);
             $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
             $evalutionDislikes = $user->rStore->rEvaluationByType(3);
-        
+
             $evalution = [
                 'like' => ($evalutionLikes == NULL) ? 0 : $evalutionLikes->count(),
                 'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
@@ -113,8 +113,8 @@ class LoginSellerController extends AuthController
         // $evalutionLikes = $user->rStore->rEvaluationByType(1);
         // $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
         // $evalutionDislikes = $user->rStore->rEvaluationByType(3);
-        
-        
+
+
 
         $response['userInfo'] = [
             'id' => $user->id,
@@ -143,6 +143,6 @@ class LoginSellerController extends AuthController
         $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
         $user->save();
 
-        Mail::to($user->email)->send(new EmailVerificationCode($pin));
+        //Mail::to($user->email)->send(new EmailVerificationCode($pin));
     }
 }

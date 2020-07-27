@@ -10,8 +10,13 @@ use App\Address;
 use App\State;
 use Storage;
 use App\Traits\LoadList;
+use Hash;
+use URL;
+use Carbon\Carbon;
 use App\Mail\ChangeDeviceCode;
-
+use App\Helper\JwtDecoderHelper;
+use App\Mail\EmailChanged;
+use JWTAuth;
 class UserController extends Controller
 {
     use LoadList;
@@ -201,6 +206,58 @@ class UserController extends Controller
         return $response;
     }
 
+    public function changePassword(Request $request)
+    {
+        $password = $request->password;
+        $user = auth()->user();
+        $response = ['success' => 1];
+        if(Hash::check($password, $user->password))
+        {
+            $response['success'] = -1;
+        }
+        else
+        {
+            $response['success'] = -2;
+        }
+        $user->password = Hash::make($password);
+        $user->save();
+        return response()->json($response);
+    }
+    public function changeEmail(Request $request)
+    {
+        $user = auth()->user();
+        $setting = $user->rSetting()->where('key','change_email')->first();
+        if($setting == null)
+        {
+            $setting = new UserSetting;
+            $setting->key = 'change_email';
+            $setting->user_id = $user->id;
+        }
+        $setting->value = $request->email;
+        $setting->save();
+
+        //generate token
+        $token = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(1)->timestamp]);
+        //save token
+        $setting = $user->rSetting()->where('key','change_email_token')->first();
+        if($setting == null)
+        {
+            $setting = new UserSetting;
+            $setting->key = 'change_email_token';
+            $setting->user_id = $user->id;
+        }
+        $setting->value = $token;
+        $setting->save();
+        $confirmUrl = URL::to('/confirmEmailChange?token=').$token;
+        Mail::to('jssuperstar1001@gmail.com')->send(new EmailChanged($confirmUrl));
+        return response(['success' => 1,'email' => $setting->value]);
+    }
+    public function confirmEmailChange(Request $request)
+    {
+        $token = random_bytes(80);
+        $token = bin2hex($token);
+        return $token;
+    }
     /**
      * @Generate Two factor pin code
      */
