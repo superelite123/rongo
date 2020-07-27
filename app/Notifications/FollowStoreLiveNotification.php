@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notification as Noti;
 use Illuminate\Bus\Queueable;
 use Benwilkins\FCM\FcmMessage;
 use Illuminate\Notifications\Notification;
@@ -10,14 +11,16 @@ class FollowStoreLiveNotification extends Notification
 {
     use Queueable;
 
+    public $notification;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Noti $notification)
     {
-        //
+        $this->notification = $notification;
     }
 
     /**
@@ -40,13 +43,17 @@ class FollowStoreLiveNotification extends Notification
     public function toFCM($notifiable) {
         $message = new FcmMessage();
         $message->content([
-            'title'        => 'Foo', 
-            'body'         => 'Bar', 
-            'sound'        => '', // Optional 
-            'icon'         => '', // Optional
+            'title'        => $this->notification->title, 
+            'body'         => $this->notification->body, 
+            'sound'        => 'default', // Optional 
+            'badge'        => 1, // Optional
             'click_action' => '' // Optional
         ])->data([
-            'param1' => 'baz' // Optional
+            'live_id' => $this->notification->live_id,
+            'store_id' => $this->notification->store_id,
+            'type' => $this->notification->type,
+            'icon' => $this->notification->icon,
+            'id' =>  $this->notification->id// Optional
         ])->priority(FcmMessage::PRIORITY_HIGH);
 
         return $message;

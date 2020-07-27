@@ -9,6 +9,7 @@ use Carbon\Carbon;
 //Load Model
 use App\User;
 use App\Live;
+use App\Notification;
 use App\LiveHasUser;
 use App\LiveHasProduct;
 use App\Product;
@@ -112,6 +113,7 @@ class LiveController extends WowzaController
 
         $this->startLiveStream($liveStreamReponse['id']);
         $productInsertData = [];
+
         // foreach($request->products as $_product)
         // {
         //     $productInsertData[] = new LiveHasProduct([
@@ -126,14 +128,53 @@ class LiveController extends WowzaController
 
         $response['id']         = $live->id;
         $response['liveData']    = $liveStreamReponse['source_connection_information'];
-        $response['hls_url'] = $live->hls_url;
-        $response['channel'] = $channel;
+        $response['hls_url']    = $live->hls_url;
+        $response['channel']    = $channel;
         // $response['cid']            = $live->cid;
         // $response['cadmin_id']      = $live->cadmin_id;
 
         $follows = $user->rStore->rUsersFollow;
         foreach ($follows as $follow) {
-            $follows->rUser->notify(new FollowStoreLiveNotification());
+            $customer = $follow->rUser;
+
+            $setting = $customer->rSetting->where('key', 'notification_store_live')->first();
+            
+            if ($setting->value) {
+                $notification = new Notification;
+                $notification->title = "フォロー中のストアのライブ配信";
+                $notification->body = $user->nickname."で新しいライブ配信放送を始めました。";
+                $notification->icon = asset(Storage::url('LivePhoto')).'/'.$filename;
+                $notification->receiver = $customer->id;
+                $notification->live_id = $live->id;
+                $notification->store_id = $user->rStore->id;
+                $notification->type = 4;
+                $notification->save();
+
+                $customer->notify(new FollowStoreLiveNotification($notification));
+            }
+        }
+
+        $products = $live->rProducts;
+        foreach ($products as $product) {
+            $likers = $product->rUserLike;
+
+            foreach ($likers as $liker) {
+                $setting = $customer->rSetting->where('key', 'notification_product_live')->first();
+
+                if ($setting->value) {
+                    $notification = new Notification;
+                    $notification->title = "お気に入り商品のライブ配信";
+                    $notification->body = "お気に入り商品が配信に追加されました。";
+                    $notification->icon = asset(Storage::url('ProductPortfolio/').$product->Thumbnail());
+                    $notification->receiver = $customer->id;
+                    $notification->live_id = $live->id;
+                    $notification->product_id = $product->id;
+                    $notification->type = 3;
+                    $notification->save();
+    
+                    $customer->notify(new FollowStoreLiveNotification($notification));
+                }
+            }
         }
 
         return response()->json($response);
@@ -404,5 +445,11 @@ class LiveController extends WowzaController
         /**Send Push Notification */
         event(new LikeProductLiving($live,$product));
         return response()->json($response);
+    }
+
+    public function testPushNotification(Request $request) {
+        $user = auth()->user();
+        $user->notify(new FollowStoreLiveNotification());
+        return response()->json(['success' => true]);
     }
 }

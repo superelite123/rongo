@@ -14,14 +14,23 @@ class NotificationController extends Controller
     use LoadList;
     public function index()
     {
-        $notifications = Notification::whereIn('receiver',[0,auth()->user()->id])->get();
+        $user = auth()->user();
+        $notifications = Notification::where('receiver', $user->id)->get();
         $response = [];
         foreach($notifications as $notification)
         {
-            $response[] = $this->notificationtoArray($notification);
+            $response[] = $notification;//$this->notificationtoArray($notification);
         }
 
         return response()->json($response);
+    }
+
+    public function markAsRead($id) {
+        $notification = Notification::find($id);
+        $notification->readStatus = 1;
+        $notification->save();
+
+        return response()->json(['success' => true]);
     }
 
     public function sendLikeProductLive(Request $request)

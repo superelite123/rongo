@@ -69,7 +69,6 @@ $api->version('v1', function (Router $api) {
         $api->post('register', 'App\\Api\\V1\\Controllers\\LiveController@register');
         $api->post('register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
         $api->post('add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
-
     });
     /**
      * User Detail
@@ -120,6 +119,7 @@ $api->version('v1', function (Router $api) {
      */
     $api->group(['middleware' => 'jwt.auth','prefix' => 'notification'], function(Router $api) {
         $api->get('/','App\\Api\\V1\\Controllers\\NotificationController@index');
+        $api->post('/{id}','App\\Api\\V1\\Controllers\\NotificationController@markAsRead');
     });
     /**
      * News

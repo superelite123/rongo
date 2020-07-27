@@ -31,6 +31,7 @@ class UserSettingController extends Controller
                     ->where('key','like','notification_%')->get();
         return response()->json($settings);
     }
+    
     public function setNotification(Request $request)
     {
         $key = 'notification_';
@@ -53,6 +54,7 @@ class UserSettingController extends Controller
                 $key .= 'store_live';
             break;
         }
+
         $user = auth()->user();
         $setting = $user->rSetting()->where('key',$key)->first();
         if($setting == null)
@@ -64,6 +66,6 @@ class UserSettingController extends Controller
         $setting->value = $request->value;
         $setting->save();
 
-        return response()->json(['key' => $setting->key,'value' => $setting->value]);
+        return response()->json(['success' => true]);
     }
 }
