@@ -20,7 +20,6 @@ use Config;
 use App\Traits\LoadList;
 use App\Events\LikeProductLiving;
 use App\Notifications\FollowStoreLiveNotification;
-
 class LiveController extends WowzaController
 {
     use LoadList;
@@ -51,17 +50,18 @@ class LiveController extends WowzaController
         $liveStreamReponse = [];
         //Create LiveStream
         //$this->createLiveStream($request->title)
-        $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
+        // $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
 
-        $liveStreamReponse = $liveStreamReponse['live_stream'];
-        // $liveStreamReponse = ['id' => '23232df',
-        //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
-        //                       'source_connection_information' => [
-        //                         'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                         'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                         'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                       ]
-        // ];
+        // $liveStreamReponse = $liveStreamReponse['live_stream'];
+
+        $liveStreamReponse = ['id' => '23232df',
+                              'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
+                              'source_connection_information' => [
+                                'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                                'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                                'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                              ]
+        ];
 
         /**
          * Create Chat Channel
@@ -77,41 +77,39 @@ class LiveController extends WowzaController
         $client->updateUser($cadmin);
         $channelConfig = [
                           'name' => $request->title,
-                          'typing_events' => true,
-                          'read_events' => true,
-                          'connect_events' => true,
+                          'typing_events' => false,
+                          'read_events' => false,
+                          'connect_events' => false,
                          ];
         // Instantiate a livestream type channel with id homeShopping
         $channel = $client->Channel("livestream", $cid, $channelConfig);
         unset($channelConfig['name']);
         $channelType = $client->updateChannelType('livestream',$channelConfig);
-        //print_r($channelType);
-        // Create the channel
-        $state = $channel->create($cadmin['id']);
-        //Create Live
-        $live = new Live;
-        $live->title        = $request->title;
-        $live->store_id     = 1;
-        $live->tag_id       = $this->registerTag($request->tag);
-        $live->status_id    = 1;
-        $live->stream_id    = $liveStreamReponse['id'];
-        $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
-        $live->photo = 'aa.png';
-        $live->cid          = $cid;
-        $live->cadmin_id    = $cadmin['id'];
 
-        $live->save();
-        //Save Thumbnail
-        $filename = $live->id.'.png';
-        if(!Storage::disk('live_photo')->put($filename, base64_decode($request->thumbnail) ) )
-        {
-            return -1;
-        }
-        $live->photo        = $filename;
-        $live->save();
+        // //Create Live
+        // $live = new Live;
+        // $live->title        = $request->title;
+        // $live->store_id     = 1;
+        // $live->tag_id       = $this->registerTag($request->tag);
+        // $live->status_id    = 1;
+        // $live->stream_id    = $liveStreamReponse['id'];
+        // $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
+        // $live->photo = 'aa.png';
+        // $live->cid          = $cid;
+        // $live->cadmin_id    = $cadmin['id'];
 
-        $this->startLiveStream($liveStreamReponse['id']);
-        $productInsertData = [];
+        // $live->save();
+        // //Save Thumbnail
+        // $filename = $live->id.'.png';
+        // if(!Storage::disk('live_photo')->put($filename, base64_decode($request->thumbnail) ) )
+        // {
+        //     return -1;
+        // }
+        // $live->photo        = $filename;
+        // $live->save();
+
+        // $this->startLiveStream($liveStreamReponse['id']);
+        // $productInsertData = [];
         // foreach($request->products as $_product)
         // {
         //     $productInsertData[] = new LiveHasProduct([
@@ -124,18 +122,29 @@ class LiveController extends WowzaController
         // }
         // $live->rProducts()->saveMany($productInsertData);
 
-        $response['id']         = $live->id;
-        $response['liveData']    = $liveStreamReponse['source_connection_information'];
-        $response['hls_url'] = $live->hls_url;
-        $response['channel'] = $channel;
+        // $response['id']         = $live->id;
+        // $response['liveData']    = $liveStreamReponse['source_connection_information'];
+        // $response['hls_url'] = $live->hls_url;
+        // $response['channel'] = $channel;
         // $response['cid']            = $live->cid;
         // $response['cadmin_id']      = $live->cadmin_id;
 
-        $follows = $user->rStore->rUsersFollow;
-        foreach ($follows as $follow) {
-            $follow->rUser->notify(new FollowStoreLiveNotification());
-        }
+        // $follows = $user->rStore->rUsersFollow;
+        // foreach ($follows as $follow) {
+        //     $follow->rUser->notify(new FollowStoreLiveNotification());
+        // }
+        $live = Live::find(90);
+        $live->cid          = $cid;
+        $live->cadmin_id    = $cadmin['id'];
+        $live->save();
 
+        $response['id']         = $live->id;
+        $response['liveData']   = $liveStreamReponse['source_connection_information'];
+        $response['hls_url']    = $live->hls_url;
+        $response['channel']    = $channel;
+        $response['channel_id'] = $live->cid;
+        $response['cadmin_id']  = $live->cadmin_id;
+        $response['chat_user_id'] = $user->chat_id;
         return response()->json($response);
     }
 

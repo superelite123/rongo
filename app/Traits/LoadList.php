@@ -53,7 +53,7 @@ trait LoadList
             $item['numLikes']   = $product->rUserLike()->count();
             $item['isLike']     = $product->rUserLike()->where('user_id',auth()->user()->id)->get()->count() > 0?1:0;
             $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
-            $item['storeName']  = $product->StoreInfo['storeName'];
+            $item['storeName']  = $product->StoreInfo != null?$product->StoreInfo['storeName']:'';
 
             $json[] = $item;
         }
