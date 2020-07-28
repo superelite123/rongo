@@ -92,7 +92,7 @@ $api->version('v1', function (Router $api) {
         $api->post('registerAccount', 'App\\Api\\V1\\Controllers\\UserController@registerAccountInfo');
         $api->post('changeDevice', 'App\\Api\\V1\\Controllers\\UserController@changeUserDeivce');
     });
-    $api->get('confirmEmailChange', 'App\\Api\\V1\\Controllers\\UserController@confirmEmailChange')->middleware('jwt.auth');
+    $api->get('confirmEmail', 'App\\Api\\V1\\Controllers\\UserController@confirmEmailChange')->middleware('jwt.auth');
     /**
      * Address
      */
