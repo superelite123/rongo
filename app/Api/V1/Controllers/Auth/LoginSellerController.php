@@ -151,6 +151,6 @@ class LoginSellerController extends AuthController
         $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
         $user->save();
 
-        //Mail::to($user->email)->send(new EmailVerificationCode($pin));
+        Mail::to($user->email)->send(new EmailVerificationCode($pin));
     }
 }
