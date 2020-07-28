@@ -40,6 +40,7 @@ class ProductController extends Controller
     }
     public function getAdminList($type)
     {
+        $options['store_id'] = auth()->user()->rStore->id;
         $options['status'] = [];
         if($type == 0)
         {
@@ -156,6 +157,22 @@ class ProductController extends Controller
             }
         }
         return response()->json(['product' => $response]);
+    }
+
+    public function stageProduct(Request $request)
+    {
+        $product = Product::find($request->id);
+        if($product != null)
+        {
+            $product->status_id = Config::get('constants.pStatus.added');
+            $product->save();
+        }
+        return response()->json(
+            [
+                'success'   => 1,
+                'id'        => $request->id,
+                'status'    => Config::get('constants.pStatus.added')
+            ]);
     }
 
     public function addLikeProduct(Request $request){

@@ -69,11 +69,11 @@ class Product extends Model
 
     public function getStoreInfoAttribute()
     {
-        $data = [];
+        $data = null;
         //get Store Name
         $store = $this->rStore;
         if($store != null){
-
+            $data = [];
             $data['storeId'] = $store->id;
             $data['storeName'] = $store->rUser == null?null:$store->rUser->nickname;
             $data['nStoreFollow'] = $store->nTotalFollow;

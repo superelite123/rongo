@@ -52,7 +52,6 @@ class StoreController extends Controller
     public function follows($type) {
         $user = auth()->user();
         $store = $user->rStore;
-        return $store->id;
         $follows = $store->rUsersFollow()->where('type', $type)->get();
 
         foreach($follows as $follow)
