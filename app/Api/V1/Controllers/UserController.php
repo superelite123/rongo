@@ -249,9 +249,10 @@ class UserController extends Controller
         $setting->value = $token;
         $setting->save();
         $confirmUrl = URL::to('/confirmEmailChange?token=').$token;
-        Mail::to('jssuperstar1001@gmail.com')->send(new EmailChanged($confirmUrl));
+        Mail::to($user->email)->send(new EmailChanged($confirmUrl));
         return response(['success' => 1,'email' => $setting->value]);
     }
+
     public function confirmEmailChange(Request $request)
     {
         $token = random_bytes(80);
