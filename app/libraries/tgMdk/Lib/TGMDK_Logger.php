@@ -1,14 +1,15 @@
 <?php
-namespace App\libraries\tgMdk\Lib;
-use App\libraries\tgMdk\Lib\log4php\Logger;
-// if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
 
-// if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
-// //require_once(LOG4PHP_DIR . DS . 'LoggerManager.php');
+Namespace App\Libraries\tgMdk\Lib;
 
-// // PHP5.3対応 ログ基底クラスが変更になった
-// require_once(LOG4PHP_DIR . DS . 'Logger.php');
-// Logger::configure(LOG4PHP_CONFIGURATION);
+if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
+
+if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
+//require_once(LOG4PHP_DIR . DS . 'LoggerManager.php');
+
+// PHP5.3対応 ログ基底クラスが変更になった
+require_once(LOG4PHP_DIR . DS . 'Logger.php');
+Logger::configure(LOG4PHP_CONFIGURATION);
 
 /**
  * TGMDK_Logger ログ出力クラス
@@ -17,6 +18,10 @@ use App\libraries\tgMdk\Lib\log4php\Logger;
  * @package     Lib
  * @copyright   VeriTrans Inc.
  */
+
+
+use Exception;
+
 final class TGMDK_Logger {
 // Defines
     /** パッケージ名 */

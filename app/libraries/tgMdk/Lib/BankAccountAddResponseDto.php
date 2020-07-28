@@ -1,0 +1,13 @@
+<?php
+
+Namespace App\Libraries\tgMdk\Lib;
+
+/**
+ * 銀行口座情報追加レスポンスDTO
+ * @author Veritrans, Inc.
+ */
+class BankAccountAddResponseDto extends AbstractPayNowIdResponseDto {
+
+}
+
+?>

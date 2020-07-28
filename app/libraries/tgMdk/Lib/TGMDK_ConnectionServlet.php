@@ -1,5 +1,7 @@
 <?php
-namespace App\libraries\tgMdk\Lib;
+
+Namespace App\Libraries\tgMdk\Lib;
+
 if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
 
 if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
@@ -17,6 +19,15 @@ if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
  * @access  public
  * @author  VeriTrans Inc.
  */
+
+use Exception;
+use ErrorException;
+
+function error_handler($errno, $errstr, $errfile, $errline) {
+
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
+
 class TGMDK_ConnectionServlet {
 
     /** データ送信時のチャンクサイズ */
@@ -66,7 +77,7 @@ class TGMDK_ConnectionServlet {
      */
     public function __construct($use_default_conf = TRUE) {
         // エラーハンドラ設定
-        set_error_handler("error_handler");
+        set_error_handler('App\Libraries\tgMdk\Lib\error_handler');
 
         if ($use_default_conf) {
             $this->set_default_config();

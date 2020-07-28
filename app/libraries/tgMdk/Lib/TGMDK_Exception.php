@@ -1,5 +1,7 @@
 <?php
-namespace App\libraries\tgMdk\Lib;
+
+Namespace App\Libraries\tgMdk\Lib;
+
 if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
 
 if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
@@ -11,6 +13,9 @@ if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
  * @package     Lib
  * @copyright   VeriTrans Inc.
  */
+
+use Exception;
+
 final class TGMDK_Exception extends Exception {
 
     // 元の例外を保持する変数

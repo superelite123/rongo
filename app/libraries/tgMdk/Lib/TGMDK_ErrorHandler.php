@@ -1,5 +1,6 @@
 <?php
-namespace App\libraries\tgMdk\Lib;
+
+Namespace App\Libraries\tgMdk\Lib;
 
 /**
  * エラーハンドリング処理。
@@ -9,6 +10,14 @@ namespace App\libraries\tgMdk\Lib;
  * @param int $errline
  * @throws ErrorException
  */
-function error_handler($errno, $errstr, $errfile, $errline) {
-    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+
+use ErrorException;
+
+trait TGMDK_ErrorHandler {
+
+    function error_handler($errno, $errstr, $errfile, $errline) {
+
+        throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+    }
 }
+

@@ -1,8 +1,10 @@
 <?php
-namespace App\libraries\tgMdk\Lib;
-//if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
 
-//if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
+Namespace App\Libraries\tgMdk\Lib;
+
+if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
+
+if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
 
 /**
  *
@@ -14,6 +16,9 @@ namespace App\libraries\tgMdk\Lib;
  * @access  public
  * @author VeriTrans Inc.
  */
+
+use Exception;
+
 class TGMDK_Transaction {
 
     /** ロガー */
