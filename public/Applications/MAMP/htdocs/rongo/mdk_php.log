@@ -1,0 +1,12 @@
+2020-07-28 18:52:28,550 DEBUG [unknown] - TGMDK_Transaction.execute() start
+2020-07-28 18:52:28,552  INFO [unknown] - connect url   ==> https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card
+2020-07-28 18:52:28,552  INFO [unknown] - user agent    ==> VeriTrans 4GMDK/1.0.C/1.0.C (PHP 7.4.2; )
+2020-07-28 18:52:28,552  INFO [unknown] - request data  ==> {"orderId":"dummy1595929948","amount":2220,"withCapture":1,"payNowIdParam":{"AppLibrariestgMdkLibPayNowIdParamtoken":"97dcfcf8-5aae-4743-88e8-568b21c1adce"},"txnVersion":"1.0.C","dummyRequest":"1","merchantCcid":"A100000000000001069713cc"}
+2020-07-28 18:52:30,407  INFO [unknown] - response data ==> {"result":{"vResultCode":"AC22000000000000","custTxn":"260456","marchTxn":"260456","merrMsg":"カード番号パラメータが設定していません。","mstatus":"failure","orderId":"dummy1595929948","serviceType":"card","txnVersion":"1.0.C"}}
+2020-07-28 18:52:30,408 DEBUG [unknown] - TGMDK_Transaction.execute() end
+2020-07-28 18:53:55,981 DEBUG [unknown] - TGMDK_Transaction.execute() start
+2020-07-28 18:53:55,982  INFO [unknown] - connect url   ==> https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card
+2020-07-28 18:53:55,983  INFO [unknown] - user agent    ==> VeriTrans 4GMDK/1.0.C/1.0.C (PHP 7.4.2; )
+2020-07-28 18:53:55,983  INFO [unknown] - request data  ==> {"orderId":"dummy1595930035","amount":2220,"withCapture":1,"payNowIdParam":{"AppLibrariestgMdkLibPayNowIdParamtoken":"97dcfcf8-5aae-4743-88e8-568b21c1adce"},"txnVersion":"1.0.C","dummyRequest":"1","merchantCcid":"A100000000000001069713cc"}
+2020-07-28 18:53:57,829  INFO [unknown] - response data ==> {"result":{"vResultCode":"AC22000000000000","custTxn":"260460","marchTxn":"260460","merrMsg":"カード番号パラメータが設定していません。","mstatus":"failure","orderId":"dummy1595930035","serviceType":"card","txnVersion":"1.0.C"}}
+2020-07-28 18:53:57,830 DEBUG [unknown] - TGMDK_Transaction.execute() end
