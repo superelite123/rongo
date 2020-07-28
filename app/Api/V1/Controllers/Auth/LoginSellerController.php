@@ -13,6 +13,8 @@ use JWTAuth;
 use App\User;
 use Config;
 use Carbon\Carbon;
+use Hash;
+
 class LoginSellerController extends AuthController
 {
     /*
@@ -42,7 +44,7 @@ class LoginSellerController extends AuthController
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        //$this->middleware('guest')->except('logout');
     }
     /**
      * Log Seller in
@@ -55,12 +57,18 @@ class LoginSellerController extends AuthController
 
         if($user != null)
         {
-            $this->Generate2faPin($user->id);
-            return response()->json(['success' => $user->id]);
+            if(!Hash::check($user->password,$request->password))
+            {
+                $this->Generate2faPin($user->id);
+                return response()->json(['success' => $user->id]);
+            }
+            else
+            {
+                return response()->json(['success' => -2]);
+            }
         }
-        {
-            return response()->json(['success' => -1]);
-        }
+
+        return response()->json(['success' => -1]);
     }
     /**
      * Log in Confirm

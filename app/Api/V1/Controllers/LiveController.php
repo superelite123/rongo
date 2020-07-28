@@ -49,17 +49,21 @@ class LiveController extends WowzaController
             'cadmin_id' => null
         ];
         $liveStreamReponse = [];
-        //Create LiveStream
-        //$this->createLiveStream($request->title)
+        // //Create LiveStream
+        // $this->createLiveStream($request->title);
         // $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
-
+        // //can not create live stream
+        // if(!isset($liveStreamReponse['live_stream']))
+        // {
+        //     return abort(500, 'can not create Live stream');
+        // }
         // $liveStreamReponse = $liveStreamReponse['live_stream'];
 
         $liveStreamReponse = ['id' => '23232df',
                               'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
                               'source_connection_information' => [
                                 'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                                'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                                'application_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
                                 'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
                               ]
         ];
@@ -86,6 +90,7 @@ class LiveController extends WowzaController
         $channel = $client->Channel("livestream", $cid, $channelConfig);
         unset($channelConfig['name']);
         $channelType = $client->updateChannelType('livestream',$channelConfig);
+        //end chat part
 
         //Create Live
         $live = new Live;
@@ -98,7 +103,6 @@ class LiveController extends WowzaController
         $live->photo = 'aa.png';
         $live->cid          = $cid;
         $live->cadmin_id    = $cadmin['id'];
-
         $live->save();
         //Save Thumbnail
         $filename = $live->id.'.png';
@@ -119,6 +123,8 @@ class LiveController extends WowzaController
             ]);
             $product = Product::find($_product['id']);
             $product->qty -= $_product['addQty'];
+            $product->status_id = Config::get('constants.pStatus.staged');
+            $product->save();
         }
         $live->rProducts()->saveMany($productInsertData);
 
@@ -182,9 +188,17 @@ class LiveController extends WowzaController
         if($live == null) return -1;
 
         $live->status_id=2;
-        $this->stop($live->stream_id);
         $live->save();
-        return $this->stop($live->stream_id);;
+        $response = [];
+        try{
+            $this->stop($live->stream_id);
+            $response['success'] = 1;
+        }
+        catch (\Exception $e){
+            $response['success'] = 2;
+
+        }
+        return $response;
     }
 
     public function registerTag($tag)
@@ -228,7 +242,10 @@ class LiveController extends WowzaController
         $products = Live::find($id)->rProducts;
         foreach($products as $product)
         {
-            $response[] = $this->proucttoArray($product->rProduct);
+            $item = $this->proucttoArray($product->rProduct);
+            if($item != null)
+                $item['live_qty'] = $product->qty - $product->sold_qty;
+            $response[] = $item;
         }
         return response()->json($response);
     }
@@ -415,6 +432,7 @@ class LiveController extends WowzaController
         $stagedProduct->save();
 
         $product->qty -= $qty;
+
         $product->save();
 
         //Set Status Again

@@ -162,7 +162,7 @@
     <body>
         <div class="contain">
             <div class="congrats">
-                <h1>Congrat<span class="hide">ulation</span>s !</h1>
+                <h1>確認</h1>
                 <div class="done">
                     <svg version="1.1" id="tick" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         viewBox="0 0 37 37" style="enable-background:new 0 0 37 37;" xml:space="preserve">
@@ -174,8 +174,8 @@
                     </svg>
                     </div>
                 <div class="text">
-                    <p>You have successfully booked an appointment with us.</p>
-                    <a href="{{$loginUrl}}" class="button">Go to Login Page</a>
+                    <p>メールアドレスが正常に更新されました。</p>
+                    <a href="{{$loginUrl}}" class="button">ログインページに戻る。</a>
                 </div>
             </div>
         </div>

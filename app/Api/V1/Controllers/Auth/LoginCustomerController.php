@@ -45,7 +45,7 @@ class LoginCustomerController extends AuthController
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        //$this->middleware('guest')->except('logout');
     }
     /**
      * Reister Customer
