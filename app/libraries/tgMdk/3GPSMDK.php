@@ -8,10 +8,10 @@
  ******************************************************************************/
 
 if (defined('3GPSMDK_INCLUDED')) {
-    $GLOBAL['3GPSMDK_COUNT_OF_INCLUDE']++;
+    $GLOBALS['3GPSMDK_COUNT_OF_INCLUDE']++;
     return;
 } else {
-    $GLOBAL['3GPSMDK_COUNT_OF_INCLUDE'] = 1;
+    $GLOBALS['3GPSMDK_COUNT_OF_INCLUDE'] = 1;
     define('3GPSMDK_INCLUDED', TRUE);
 }
 
@@ -27,14 +27,14 @@ if (!defined('LF'))             define('LF', PHP_EOL);                          
 
 if (!defined('MDK_DIR'))        define('MDK_DIR', dirname(__FILE__));                    //  MDKインストールディレクトリ
 if (!defined('MDK_LIB_DIR'))    define('MDK_LIB_DIR', MDK_DIR . DS . "Lib");             //  MDK/Libディレクトリ
-if (!defined('MDK_DTO_DIR'))    define('MDK_DTO_DIR', MDK_LIB_DIR . DS . "tgMdkDto");    //  MDK/Lib/tgMdkDtoディレクトリ
+if (!defined('MDK_DTO_DIR'))    define('MDK_DTO_DIR', MDK_LIB_DIR );    //  MDK/Lib/tgMdkDtoディレクトリ
 
 
 /******************************************************************************
  *  log4phpが参照する定数
  ******************************************************************************/
 //  LOG4PHP_DIR
-if (!defined('LOG4PHP_DIR')) { define('LOG4PHP_DIR', MDK_LIB_DIR .DS. "log4php"); }
+if (!defined('LOG4PHP_DIR')) { define('LOG4PHP_DIR', MDK_LIB_DIR); }
 
 //  LOG4PHP_CONFIGURATION
 if (!defined('LOG4PHP_CONFIGURATION')) { define('LOG4PHP_CONFIGURATION', MDK_DIR .DS. "log4php.properties"); }
@@ -110,6 +110,7 @@ require_once(MDK_DTO_DIR . DS . 'TenpaySearchParameter.php');
 require_once(MDK_DTO_DIR . DS . 'BitcoinSearchParameter.php');
 require_once(MDK_DTO_DIR . DS . 'CvspaySearchParameter.php');
 require_once(MDK_DTO_DIR . DS . 'ScoreatpaySearchParameter.php');
+require_once(MDK_DTO_DIR . DS . 'PaypaySearchParameter.php');
 require_once(MDK_DTO_DIR . DS . 'SearchParameters.php');
 require_once(MDK_DTO_DIR . DS . 'OrderInfo.php');
 require_once(MDK_DTO_DIR . DS . 'OrderInfos.php');
@@ -347,6 +348,10 @@ require_once(MDK_DTO_DIR . DS . 'ScoreatpayErrorDto.php');
 require_once(MDK_DTO_DIR . DS . 'ScoreatpayGetInvoiceDataRequestDto.php');
 require_once(MDK_DTO_DIR . DS . 'ScoreatpayGetInvoiceDataResponseDto.php');
 require_once(MDK_DTO_DIR . DS . 'ScoreatpayHoldReasonDto.php');
+require_once(MDK_DTO_DIR . DS . 'PaypayAuthorizeRequestDto.php');
+require_once(MDK_DTO_DIR . DS . 'PaypayAuthorizeResponseDto.php');
+require_once(MDK_DTO_DIR . DS . 'PaypayRefundRequestDto.php');
+require_once(MDK_DTO_DIR . DS . 'PaypayRefundResponseDto.php');
 
 ////  各クラスをロード
 //foreach ($lib_includes as $incfile) {

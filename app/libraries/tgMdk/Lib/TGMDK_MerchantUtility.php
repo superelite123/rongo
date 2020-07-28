@@ -1,5 +1,7 @@
 <?php
-namespace App\libraries\tgMdk\Lib;
+
+Namespace App\Libraries\tgMdk\Lib;
+
 if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
 
 if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
@@ -390,8 +392,8 @@ class TGMDK_MerchantUtility {
         $decoded_md = base64_decode($md);
 
         // ハッシュコードを切り出す。
-        $original_digest;
-        $source;
+        $original_digest = null;
+        $source = null;
         $first_index = strpos($decoded_md, "&");
         if ($first_index == false) {
             $original_digest = $decoded_md;
@@ -432,7 +434,7 @@ class TGMDK_MerchantUtility {
             }
 
             // valueを取得する。
-            $value;
+            $value = null;
             if ($index + 1 < $length) {
                 $value = substr($tok, $index + 1);
                 $value = urldecode($value);

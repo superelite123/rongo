@@ -23,14 +23,14 @@ class UserStoreController extends Controller
         $response['id'] = $store->id;
         $response['description']    = $store->description;
 
-        $rootUrl = Storage::disk('store_background')->url($store_id.'/');
+        $rootUrl = asset(Storage::url('StoreBackground')).'/'.$store_id.'/';
         $response['backgrounds']    = [];
         foreach($store->rBackground()->orderBy('order')->get() as $bg)
         {
             $response['backgrounds'][] = $rootUrl.$bg['filename'];
         }
         $response['explantions'] = [];
-        $rootUrl = Storage::disk('store_explantion')->url($store_id.'/');
+        $rootUrl = asset(Storage::url('StoreExplantion')).'/'.$store_id.'/';
         foreach($store->rExplantion()->orderBy('order')->get() as $explain)
         {
             $response['explantions'][] = $rootUrl.$explain['filename'];

@@ -21,7 +21,6 @@ use Config;
 use App\Traits\LoadList;
 use App\Events\LikeProductLiving;
 use App\Notifications\FollowStoreLiveNotification;
-
 class LiveController extends WowzaController
 {
     use LoadList;
@@ -52,17 +51,18 @@ class LiveController extends WowzaController
         $liveStreamReponse = [];
         //Create LiveStream
         //$this->createLiveStream($request->title)
-        $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
+        // $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
 
-        $liveStreamReponse = $liveStreamReponse['live_stream'];
-        // $liveStreamReponse = ['id' => '23232df',
-        //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
-        //                       'source_connection_information' => [
-        //                         'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                         'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                         'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                       ]
-        // ];
+        // $liveStreamReponse = $liveStreamReponse['live_stream'];
+
+        $liveStreamReponse = ['id' => '23232df',
+                              'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
+                              'source_connection_information' => [
+                                'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                                'app_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                                'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                              ]
+        ];
 
         /**
          * Create Chat Channel
@@ -78,17 +78,15 @@ class LiveController extends WowzaController
         $client->updateUser($cadmin);
         $channelConfig = [
                           'name' => $request->title,
-                          'typing_events' => true,
-                          'read_events' => true,
-                          'connect_events' => true,
+                          'typing_events' => false,
+                          'read_events' => false,
+                          'connect_events' => false,
                          ];
         // Instantiate a livestream type channel with id homeShopping
         $channel = $client->Channel("livestream", $cid, $channelConfig);
         unset($channelConfig['name']);
         $channelType = $client->updateChannelType('livestream',$channelConfig);
-        //print_r($channelType);
-        // Create the channel
-        $state = $channel->create($cadmin['id']);
+
         //Create Live
         $live = new Live;
         $live->title        = $request->title;
@@ -110,28 +108,26 @@ class LiveController extends WowzaController
         }
         $live->photo        = $filename;
         $live->save();
-
         $this->startLiveStream($liveStreamReponse['id']);
         $productInsertData = [];
-
-        // foreach($request->products as $_product)
-        // {
-        //     $productInsertData[] = new LiveHasProduct([
-        //         'product_id' => $_product['id'],
-        //         'qty' => $_product['addQty'],
-        //         'sold_qty' => 0
-        //     ]);
-        //     $product = Product::find($_product['id']);
-        //     $product->qty -= $_product['addQty'];
-        // }
-        // $live->rProducts()->saveMany($productInsertData);
+        foreach($request->products as $_product)
+        {
+            $productInsertData[] = new LiveHasProduct([
+                'product_id' => $_product['id'],
+                'qty' => $_product['addQty'],
+                'sold_qty' => 0
+            ]);
+            $product = Product::find($_product['id']);
+            $product->qty -= $_product['addQty'];
+        }
+        $live->rProducts()->saveMany($productInsertData);
 
         $response['id']         = $live->id;
         $response['liveData']    = $liveStreamReponse['source_connection_information'];
         $response['hls_url']    = $live->hls_url;
         $response['channel']    = $channel;
-        // $response['cid']            = $live->cid;
-        // $response['cadmin_id']      = $live->cadmin_id;
+        $response['cid']            = $live->cid;
+        $response['cadmin_id']      = $live->cadmin_id;
 
         $follows = $user->rStore->rUsersFollow;
         foreach ($follows as $follow) {
@@ -176,7 +172,7 @@ class LiveController extends WowzaController
                 }
             }
         }
-
+        
         return response()->json($response);
     }
 
@@ -397,53 +393,53 @@ class LiveController extends WowzaController
         $live = Live::find($request->live_id);
 
         $product = Product::find($request->product_id);
-        // $qty = $request->qty;
+        $qty = $request->qty;
 
-        // if($qty > $product->qty)
-        // {
-        //     $response['result'] = 1;
-        //     return response()->json($response);
-        // }
+        if($qty > $product->qty)
+        {
+            $response['result'] = 1;
+            return response()->json($response);
+        }
 
-        // //get LiveHasProduct Object
-        // $stagedProduct = $live->rProducts()->where('product_id',$product->id)->first();
-        // if($stagedProduct == null)
-        // {
-        //     $stagedProduct = new LiveHasProduct;
-        //     $stagedProduct->live_id = $live->id;
-        //     $stagedProduct->product_id = $product->id;
-        //     $stagedProduct->sold_qty = 0;
-        // }
+        //get LiveHasProduct Object
+        $stagedProduct = $live->rProducts()->where('product_id',$product->id)->first();
+        if($stagedProduct == null)
+        {
+            $stagedProduct = new LiveHasProduct;
+            $stagedProduct->live_id = $live->id;
+            $stagedProduct->product_id = $product->id;
+            $stagedProduct->sold_qty = 0;
+        }
 
-        // $stagedProduct->qty += $qty;
-        // $stagedProduct->save();
+        $stagedProduct->qty += $qty;
+        $stagedProduct->save();
 
-        // $product->qty -= $qty;
-        // $product->save();
+        $product->qty -= $qty;
+        $product->save();
 
-        // //Set Status Again
-        // $pStatus = Config::get('constants.pStatus');
-        // switch($product->status_id)
-        // {
-        //     case $pStatus['added']:
-        //         $nextStatus = $pStatus['staged'];
-        //     break;
-        //     case $pStatus['staged']:
-        //         $nextStatus = $pStatus['restaged'];
-        //     break;
-        //     case $pStatus['sold']:
-        //         $nextStatus = $pStatus['restaged'];
-        //     break;
-        //     default:
-        //         $nextStatus = $pStatus['staged'];
-        //     break;
-        // }
-        // $product->status_id = $nextStatus;
-        // $product->save();
+        //Set Status Again
+        $pStatus = Config::get('constants.pStatus');
+        switch($product->status_id)
+        {
+            case $pStatus['added']:
+                $nextStatus = $pStatus['staged'];
+            break;
+            case $pStatus['staged']:
+                $nextStatus = $pStatus['restaged'];
+            break;
+            case $pStatus['sold']:
+                $nextStatus = $pStatus['restaged'];
+            break;
+            default:
+                $nextStatus = $pStatus['staged'];
+            break;
+        }
+        $product->status_id = $nextStatus;
+        $product->save();
 
         $response['products'] = $this->products($live->id);
         /**Send Push Notification */
-        event(new LikeProductLiving($live,$product));
+        //event(new LikeProductLiving($live,$product));
         return response()->json($response);
     }
 

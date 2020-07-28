@@ -1,5 +1,7 @@
 <?php
-namespace App\libraries\tgMdk\Lib;
+
+Namespace App\Libraries\tgMdk\Lib;
+
 if (realpath($_SERVER["SCRIPT_FILENAME"]) == realpath(__FILE__)) die('Permission denied.');
 
 if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
@@ -13,6 +15,9 @@ if (!defined('MDK_LIB_DIR')) require_once('../3GPSMDK.php');
  * @package     Lib
  * @copyright   VeriTrans Inc.
  */
+
+use Exception;
+
 class TGMDK_ErrorMessage {
 
     // define const
@@ -83,10 +88,10 @@ class TGMDK_ErrorMessage {
             $pattern = array();
             $replacement = array();
             $idx = 0;
-
+            
             $args = func_get_args();
             array_shift($args); //  先頭要素（$messageId）を削除
-
+            
             foreach ($args as $key => $val) {
                 if ($val instanceof Exception) {
                     //  例外クラス（および、その派生クラス）なら
