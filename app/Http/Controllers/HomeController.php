@@ -31,7 +31,7 @@ class HomeController extends Controller
 
     public function confirmEmailChange(Request $request)
     {
-        $loginUrl = 'http://localhost:3000';
+        $loginUrl = 'https://app.live.rongoinc.com';
 
         $setting = UserSetting::where('value',$request->token)->first();
         if($setting == null)
