@@ -97,19 +97,23 @@ class SellHistoryController extends Controller
         ->join('live_has_product','lives.id','=','live_has_product.live_id')
         ->join('products','live_has_product.product_id','=','products.id')
         ->join('orders','products.id','=','orders.product_id')
-        ->where(DB::raw('CAST(lives.created_at AS DATE)'),'2020-07-25')
+        ->where(DB::raw('CAST(lives.created_at AS DATE)'),"'".$request->date."'")
         ->orderBy(DB::raw('lives.id'),'desc')
         ->get();
         $result = [];
         $currentLive = -1;
         $live = [];
         $productThumbnailRootUrl = asset(Storage::url('ProductPortfolio')).'/';
+
         foreach($dbResult as $item)
         {
             if($currentLive != $item->lid)
             {
                 if(count($live) > 1)
+                {
+                    return 1;
                     $result[] = $live;
+                }
                 $liveObj = Live::find($item->lid);
                 $liveThumbnail = asset(Storage::url('LivePhoto')).'/'.$liveObj->photo;
                 $liveWatchData = $liveObj->nWatchers;
@@ -135,9 +139,16 @@ class SellHistoryController extends Controller
             $live['orders'][] = $order;
             $live['price'] += $order['price'];
         }
-        if($result[count($result) - 1]['id'] != $live['id'])
+        if(count($dbResult) > 0)
         {
-            $result[] = $live;
+            if(count($result) == 0)
+            {
+                $result[] = $live;
+            }
+            elseif($result[count($result) - 1]['id'] != $live['id'])
+            {
+                $result[] = $live;
+            }
         }
         $response['lives'] = $result;
         return response()->json($response);

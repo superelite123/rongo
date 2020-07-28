@@ -141,7 +141,7 @@ trait LoadList
         return $response;
     }
 
-    public function liveToArray(Live $live)
+    public function liveToArray($live)
     {
         $item = [];
         if($live != null)
