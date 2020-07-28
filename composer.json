@@ -48,8 +48,8 @@
             "database/factories"
         ],
         "files": [
-            "app/Libraries/tgMdk/3GPSMDK.php"
-        ]
+            "app/Libraries/tgMdk/3GPSMDK.php" 
+ 	]
     },
     "autoload-dev": {
         "psr-4": {

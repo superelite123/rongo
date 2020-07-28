@@ -239,7 +239,7 @@ namespace :laravel do
         before 'composer:run',      'laravel:config_cache'
         after  'composer:run',    'laravel:storage_link'
         after  'deploy:updated',    'laravel:config_cache'
-        after  'deploy:updated',    'laravel:route_cache'
+        #after  'deploy:updated',    'laravel:route_cache'
         after  'deploy:updated',    'laravel:routes_clear'
         #after 'deploy:updated', 'laravel:migrate_data'
 end
