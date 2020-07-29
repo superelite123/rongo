@@ -61,8 +61,8 @@ class Store extends Model
     {
         $background = $this->rBackground()->first();
         if($background != null)
-        return asset(Storage::url('StoreBackground').'/'.$background->filename);
-        return null;
+            return asset(Storage::url('StoreBackground').'/'.$background->filename);
+            return null;
     }
 
     public function getEvaluationAttribute()
