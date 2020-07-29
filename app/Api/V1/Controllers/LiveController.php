@@ -135,49 +135,49 @@ class LiveController extends WowzaController
         $response['cid']            = $live->cid;
         $response['cadmin_id']      = $live->cadmin_id;
 
-        $follows = $user->rStore->rUsersFollow;
-        foreach ($follows as $follow) {
-            $customer = $follow->rUser;
+        // $follows = $user->rStore->rUsersFollow;
+        // foreach ($follows as $follow) {
+        //     $customer = $follow->rUser;
 
-            $setting = $customer->rSetting->where('key', 'notification_store_live')->first();
+        //     $setting = $customer->rSetting->where('key', 'notification_store_live')->first();
             
-            if ($setting->value) {
-                $notification = new Notification;
-                $notification->title = "フォロー中のストアのライブ配信";
-                $notification->body = $user->nickname."で新しいライブ配信放送を始めました。";
-                $notification->icon = asset(Storage::url('LivePhoto')).'/'.$filename;
-                $notification->receiver = $customer->id;
-                $notification->live_id = $live->id;
-                $notification->store_id = $user->rStore->id;
-                $notification->type = 4;
-                $notification->save();
+        //     if ($setting->value) {
+        //         $notification = new Notification;
+        //         $notification->title = "フォロー中のストアのライブ配信";
+        //         $notification->body = $user->nickname."で新しいライブ配信放送を始めました。";
+        //         $notification->icon = asset(Storage::url('LivePhoto')).'/'.$filename;
+        //         $notification->receiver = $customer->id;
+        //         $notification->live_id = $live->id;
+        //         $notification->store_id = $user->rStore->id;
+        //         $notification->type = 4;
+        //         $notification->save();
 
-                $customer->notify(new FollowStoreLiveNotification($notification));
-            }
-        }
+        //         $customer->notify(new FollowStoreLiveNotification($notification));
+        //     }
+        // }
 
-        $products = $live->rProducts;
-        foreach ($products as $product) {
-            $likers = $product->rUserLike;
+        // $products = $live->rProducts;
+        // foreach ($products as $product) {
+        //     $likers = $product->rUserLike;
 
-            foreach ($likers as $liker) {
-                $setting = $customer->rSetting->where('key', 'notification_product_live')->first();
+        //     foreach ($likers as $liker) {
+        //         $setting = $customer->rSetting->where('key', 'notification_product_live')->first();
 
-                if ($setting->value) {
-                    $notification = new Notification;
-                    $notification->title = "お気に入り商品のライブ配信";
-                    $notification->body = "お気に入り商品が配信に追加されました。";
-                    $notification->icon = asset(Storage::url('ProductPortfolio/').$product->Thumbnail());
-                    $notification->receiver = $customer->id;
-                    $notification->live_id = $live->id;
-                    $notification->product_id = $product->id;
-                    $notification->type = 3;
-                    $notification->save();
+        //         if ($setting->value) {
+        //             $notification = new Notification;
+        //             $notification->title = "お気に入り商品のライブ配信";
+        //             $notification->body = "お気に入り商品が配信に追加されました。";
+        //             $notification->icon = asset(Storage::url('ProductPortfolio/').$product->Thumbnail());
+        //             $notification->receiver = $customer->id;
+        //             $notification->live_id = $live->id;
+        //             $notification->product_id = $product->id;
+        //             $notification->type = 3;
+        //             $notification->save();
     
-                    $customer->notify(new FollowStoreLiveNotification($notification));
-                }
-            }
-        }
+        //             $customer->notify(new FollowStoreLiveNotification($notification));
+        //         }
+        //     }
+        // }
         
         return response()->json($response);
     }
