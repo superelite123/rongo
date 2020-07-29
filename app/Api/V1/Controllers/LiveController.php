@@ -130,13 +130,6 @@ class LiveController extends WowzaController
         }
         $live->rProducts()->saveMany($productInsertData);
 
-        // $response['id']         = $live->id;
-        // $response['liveData']    = $liveStreamReponse['source_connection_information'];
-        // $response['hls_url'] = $live->hls_url;
-        // $response['channel'] = $channel;
-        // $response['cid']            = $live->cid;
-        // $response['cadmin_id']      = $live->cadmin_id;
-
         $follows = $user->rStore->rUsersFollow;
         foreach ($follows as $follow) {
             $follow->rUser->notify(new FollowStoreLiveNotification());
