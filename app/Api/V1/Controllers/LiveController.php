@@ -14,6 +14,7 @@ use App\LiveHasProduct;
 use App\Product;
 use App\Tag;
 use App\SMSVerification;
+use App\LiveEvaluation;
 use Twilio\Rest\Client as TwilloClient;
 use GetStream\StreamChat\Client;
 use Config;
@@ -48,7 +49,7 @@ class LiveController extends WowzaController
             'cadmin_id' => null
         ];
         $liveStreamReponse = [];
-        //Create LiveStream
+        Create LiveStream
         $this->createLiveStream($request->title);
         $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
         //can not create live stream
@@ -136,10 +137,10 @@ class LiveController extends WowzaController
         // $response['cid']            = $live->cid;
         // $response['cadmin_id']      = $live->cadmin_id;
 
-        // $follows = $user->rStore->rUsersFollow;
-        // foreach ($follows as $follow) {
-        //     $follow->rUser->notify(new FollowStoreLiveNotification());
-        // }
+        $follows = $user->rStore->rUsersFollow;
+        foreach ($follows as $follow) {
+            $follow->rUser->notify(new FollowStoreLiveNotification());
+        }
         // $live = Live::find(90);
         // $live->cid          = $cid;
         // $live->cadmin_id    = $cadmin['id'];
@@ -277,6 +278,29 @@ class LiveController extends WowzaController
 
         return response()->json( $response );
     }
+
+    public function like(Request $request) {
+        $user = auth()->user();
+        $liveId = $request->live_id;
+        $live = Live::find($liveId);
+        $evaluation = $live->rEvaluation()->where('user_id', $user->id)->first();
+        $response = [];
+        if ($evaluation == null) {
+            $evaluation = new LiveEvaluation();
+            $evaluation->user_id = $user->id;
+            $evaluation->live_id = $liveId;
+            $evaluation->save();
+            $response['success'] = true;
+            $response['isLike'] = true;
+        } else {
+            $evaluation->delete();
+            $response['success'] = true;
+            $response['isLike'] = false;
+        }
+
+        return response()->json($response);
+    }
+
     public function register(Request $request)
     {
         /**

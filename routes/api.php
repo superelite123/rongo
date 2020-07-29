@@ -70,7 +70,7 @@ $api->version('v1', function (Router $api) {
         $api->post('register', 'App\\Api\\V1\\Controllers\\LiveController@register');
         $api->post('register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
         $api->post('add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
-
+        $api->post('like', 'App\\Api\\V1\\Controllers\\LiveController@like');
     });
     /**
      * User Detail
