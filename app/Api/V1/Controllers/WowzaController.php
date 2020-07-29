@@ -13,8 +13,10 @@ class WowzaController extends Controller
     private $host = 'api.cloud.wowza.com';
     private $path = '/api/v1.5/';
     private $endPoint = 'live_streams';
-    protected $wscApiKey = 'gYBQe187voHtd8dKneEot9Pp6lHJGxrDQC8XJZfp0b0Eozf0cGndFzr9iW0q3361';
-    protected $wscAccessKey = 'naAYYaxyF5ylRoDa4cYemtQMuNoHofp4kFvvDHgghBxV384M6GYzWLRmMnTl3611';
+    //protected $wscApiKey = 'KO6kPxQiOpXbve9tukGZT328My2LfMcLkZUPbQRlXmZNyulG3r02CsouFsxQ352e1';
+    //protected $wscAccessKey = 'Ry4wVK0iZSkD97S7ry5LzxLaLnPCzRQCuZSQQrgoBfxGZGqVyTzfFL9Zr8HD3451';
+     protected $wscApiKey = '4YaxMbTSQnARQK0vUVvZH2pz7h4GxfDgVUeQ3trQr0vCV3ywhWQjcE7UqJyf3505';
+     protected $wscAccessKey = '6RUhRjs2FAtzJiQDjWVhrH5ZMsSqk7vV3z6rHch5LzT3LQPvp1q6F27Csrrk3416';
     private $config = ['live_stream' => [
         "aspect_ratio_height" => 1080,
         "aspect_ratio_width" => 1920,
@@ -22,7 +24,7 @@ class WowzaController extends Controller
         "broadcast_location" => "us_west_california",
         "closed_caption_type" => "none",
         "delivery_method" => "push",
-        "encoder" => "webrtc",
+        "encoder" => "other_webrtc",
         "hosted_page" => true,
         "hosted_page_sharing_icons" => true,
         "name" => "MyLiveStream1",
@@ -45,8 +47,8 @@ class WowzaController extends Controller
     public function startLiveStream($streamID)
     {
         $this->endPoint = 'live_streams/'.$streamID.'/start';
-        $this->getHttpRequest()->put($this->getURL());
-        return $response;
+        return $this->getHttpRequest()->put($this->getURL());
+
     }
     public function stopLiveStream($streamID)
     {

@@ -2,15 +2,19 @@
 
 namespace App\Api\V1\Controllers\Auth;
 
+use Mail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Api\V1\Requests\LoginSellerRequest;
+use App\Mail\EmailVerificationCode;
 use Illuminate\Http\Request;
 use JWTAuth;
 //Models
 use App\User;
 use Config;
 use Carbon\Carbon;
+use Hash;
+
 class LoginSellerController extends AuthController
 {
     /*
@@ -40,7 +44,7 @@ class LoginSellerController extends AuthController
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        //$this->middleware('guest')->except('logout');
     }
     /**
      * Log Seller in
@@ -53,12 +57,18 @@ class LoginSellerController extends AuthController
 
         if($user != null)
         {
-            $this->Generate2faPin($user->id);
-            return response()->json(['success' => $user->id]);
+            if(Hash::check($request->password,$user->password))
+            {
+                $this->Generate2faPin($user->id);
+                return response()->json(['success' => $user->id]);
+            }
+            else
+            {
+                return response()->json(['success' => -1]);
+            }
         }
-        {
-            return response()->json(['success' => -1]);
-        }
+
+        return response()->json(['success' => -1]);
     }
     /**
      * Log in Confirm
@@ -85,25 +95,44 @@ class LoginSellerController extends AuthController
         // email:null,
         // id:null,
         // token:null,
-        $follows = $user->rStore->rUsersFollow()->where('type', 1)->count();
-        $evalutionLikes = $user->rStore->rEvaluationByType(1);
-        $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
-        $evalutionDislikes = $user->rStore->rEvaluationByType(3);
-        
-        $evalution = [
-            'like' => ($evalutionLikes == NULL) ? 0 : $evalutionLikes->count(),
-            'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
-            'dislike' => ($evalutionDislikes == NULL) ? 0 : $evalutionDislikes->count()
-        ];
+
+        $store = $user->rStore;
+        $follows = 0;
+
+        if ($store != NULL) {
+            $follows = $store->rUsersFollow()->where('type', 1)->count();
+            $evalutionLikes = $user->rStore->rEvaluationByType(1);
+            $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
+            $evalutionDislikes = $user->rStore->rEvaluationByType(3);
+
+            $evalution = [
+                'like' => ($evalutionLikes == NULL) ? 0 : $evalutionLikes->count(),
+                'notBad' => ($evalutionNoFeels == NULL) ? 0 : $evalutionNoFeels->count(),
+                'dislike' => ($evalutionDislikes == NULL) ? 0 : $evalutionDislikes->count()
+            ];
+        } else {
+            $evalution = [
+                'like' => 0,
+                'notBad' => 0,
+                'dislike' => 0
+            ];
+        }
+        // $follows = $user->rStore->rUsersFollow()->where('type', 1)->count();
+        // $evalutionLikes = $user->rStore->rEvaluationByType(1);
+        // $evalutionNoFeels = $user->rStore->rEvaluationByType(2);
+        // $evalutionDislikes = $user->rStore->rEvaluationByType(3);
+
+
 
         $response['userInfo'] = [
             'id' => $user->id,
             'nickname' => $user->nickname,
             'email' => $user->email,
             'thumbnail' => $user->cIcon,
-            'numFollowers' => $follows,
+            'numFollowers' => ($follows == null) ? 0 : $follows,
             'evaluation' => $evalution
         ];
+
         $response['result'] = 0;
         $response['token'] = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(7)->timestamp]);
 
@@ -121,5 +150,7 @@ class LoginSellerController extends AuthController
         $user->token_2fa = $pin;
         $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
         $user->save();
+
+        Mail::to($user->email)->send(new EmailVerificationCode($pin));
     }
 }

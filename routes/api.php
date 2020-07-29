@@ -30,9 +30,14 @@ $api->version('v1', function (Router $api) {
          * Product
          */
         $api->get('products', 'App\\Api\\V1\\Controllers\\ProductController@index');
+        $api->get('product/getAdminList/{type}', 'App\\Api\\V1\\Controllers\\ProductController@getAdminList');
         $api->get('product/{id}', 'App\\Api\\V1\\Controllers\\ProductController@show');
+        $api->get('product/edit/{id}', 'App\\Api\\V1\\Controllers\\ProductController@edit');
         $api->post('product/like', 'App\\Api\\V1\\Controllers\\ProductController@addLikeProduct');
+        $api->post('product/stage', 'App\\Api\\V1\\Controllers\\ProductController@stageProduct');
+        $api->post('product/store', 'App\\Api\\V1\\Controllers\\ProductController@store');
         $api->post('product/click', 'App\\Api\\V1\\Controllers\\ProductClickController@store');
+        $api->post('product/delete', 'App\\Api\\V1\\Controllers\\ProductController@delete');
         $api->get('products/ranking', 'App\\Api\\V1\\Controllers\\ProductController@rankings');
         /**
          * Live
@@ -66,6 +71,25 @@ $api->version('v1', function (Router $api) {
         $api->get('search/logs','App\\Api\\V1\\Controllers\\SearchController@logs');
     });
     /**
+     * Live
+     */
+    $api->group( ['prefix' => 'live','middleware' => 'jwt.auth'], function(Router $api){
+        $api->get('/', 'App\\Api\\V1\\Controllers\\LiveController@index');
+        $api->post('create', 'App\\Api\\V1\\Controllers\\LiveController@create');
+        $api->post('quit', 'App\\Api\\V1\\Controllers\\LiveController@quit');
+        $api->get('view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
+        $api->get('start/{id}', 'App\\Api\\V1\\Controllers\\LiveController@start');
+        $api->get('publish/{id}', 'App\\Api\\V1\\Controllers\\LiveController@publish');
+        $api->get('stop/{id}', 'App\\Api\\V1\\Controllers\\LiveController@stop');
+        $api->get('state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
+        $api->get('initial_products', 'App\\Api\\V1\\Controllers\\LiveController@initialProducts');
+        $api->get('products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@products');
+        $api->post('register', 'App\\Api\\V1\\Controllers\\LiveController@register');
+        $api->post('register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
+        $api->post('add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
+        $api->post('like', 'App\\Api\\V1\\Controllers\\LiveController@like');
+    });
+    /**
      * User Detail
      */
     $api->group(['middleware' => 'jwt.auth','prefix' => 'me'], function(Router $api) {
@@ -81,7 +105,12 @@ $api->version('v1', function (Router $api) {
         $api->post('deleteUser', 'App\\Api\\V1\\Controllers\\UserController@deleteUser');
         $api->get('getStore','App\\Api\\V1\\Controllers\\UserStoreController@index');
         $api->post('saveStore','App\\Api\\V1\\Controllers\\UserStoreController@store');
+        $api->post('changePassword','App\\Api\\V1\\Controllers\\UserController@changePassword');
+        $api->post('changeEmail','App\\Api\\V1\\Controllers\\UserController@changeEmail');
+        $api->post('registerAccount', 'App\\Api\\V1\\Controllers\\UserController@registerAccountInfo');
+        $api->post('changeDevice', 'App\\Api\\V1\\Controllers\\UserController@changeUserDeivce');
     });
+    //$api->get('confirmEmailChange', 'App\\Api\\V1\\Controllers\\UserController@confirmEmailChange')->middleware('jwt.auth');
     /**
      * Address
      */
@@ -104,7 +133,11 @@ $api->version('v1', function (Router $api) {
         $api->get('cards','App\\Api\\V1\\Controllers\\Payment\\CardController@index');
         $api->post('add_card','App\\Api\\V1\\Controllers\\Payment\\CardController@store');
         $api->get('transactions', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getTransactions');
-        $api->get('sellHistory', 'App\\Api\\V1\\Controllers\\Payment\\OrderController@getSellHistory');
+
+    });
+    $api->group(['middleware' => 'jwt.auth','prefix' => 'sell_history'], function(Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\SellHistoryController@index');
+        $api->post('/getDetail', 'App\\Api\\V1\\Controllers\\SellHistoryController@getDetail');
     });
     /**
      * Notification

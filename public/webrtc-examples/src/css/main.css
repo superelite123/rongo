@@ -1,0 +1,51 @@
+/*
+ * This code and all components (c) Copyright 2019-2020, Wowza Media Systems, LLC. All rights reserved.
+ * This code is licensed pursuant to the BSD 3-Clause License.
+ */
+
+html {
+ height: 100%;
+}
+body {
+  background: #F8F8F8;
+  height: 100%;
+}
+a:disabled,
+button:disabled {
+  cursor: not-allowed;
+}
+
+.alert-dismissible .close {
+  padding: .4rem 1.25rem;
+}
+
+#top-nav {
+  background: #FFFFFF;
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.05);
+}
+
+#content {
+  margin-top: 3em;
+  max-width: 1500px;
+}
+#player-video,
+#publisher-video {
+  width: 100%    !important;
+  height: 90%   !important;
+  background: #EEEEEE;
+}
+
+#video-live-indicator {
+  position: absolute;
+  top: 0.5em;
+  left: 1.5em;
+  opacity: 90%;
+}
+
+#build {
+  position:absolute;
+  color:#ccc;
+  font-size:50%;
+  bottom:1em;
+  right:1em;
+}

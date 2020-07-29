@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 2.5
+  - 2.6
+  - 2.7
+
+script: bundle exec rake spec rubocop
+install: bundle install --jobs=1
+cache: bundler
+sudo: false

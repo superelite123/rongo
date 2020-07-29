@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use Mail;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserSetting;
@@ -9,6 +10,13 @@ use App\Address;
 use App\State;
 use Storage;
 use App\Traits\LoadList;
+use Hash;
+use URL;
+use Carbon\Carbon;
+use App\Mail\ChangeDeviceCode;
+use App\Helper\JwtDecoderHelper;
+use App\Mail\EmailChanged;
+use JWTAuth;
 class UserController extends Controller
 {
     use LoadList;
@@ -148,6 +156,26 @@ class UserController extends Controller
         $response['email'] = $user->email;
         return response()->json($response);
     }
+
+    public function registerAccountInfo(Request $request) {
+        $user = auth()->user();
+
+        $response = [];
+        $user->email            = $request->email;
+        $user->firstname_h      = $request->firstname_h;
+        $user->lastname_h       = $request->lastname_h;
+        $user->firstname_k      = $request->firstname_k;
+        $user->lastname_k       = $request->lastname_k;
+        $user->phone_number     = $request->phone_number;
+
+        $user->save();
+
+        $response['success'] = 1;
+        $response['user'] = $this->toArray( $user );
+
+        return response()->json($response);
+    }
+
     public function getInviteCode()
     {
         $user = auth()->user();
@@ -176,5 +204,74 @@ class UserController extends Controller
         $response['ale']            = $user->ale;
         $response['inviteCode']     = $user->invite_code;
         return $response;
+    }
+
+    public function changePassword(Request $request)
+    {
+        $password = $request->password;
+        $user = auth()->user();
+        $response = ['success' => 1];
+        if(Hash::check($password, $user->password))
+        {
+            $response['success'] = -1;
+        }
+        else
+        {
+            $response['success'] = -2;
+        }
+        $user->password = Hash::make($password);
+        $user->save();
+        return response()->json($response);
+    }
+    public function changeEmail(Request $request)
+    {
+        $user = auth()->user();
+        $setting = $user->rSetting()->where('key','change_email')->first();
+        if($setting == null)
+        {
+            $setting = new UserSetting;
+            $setting->key = 'change_email';
+            $setting->user_id = $user->id;
+        }
+        $setting->value = $request->email;
+        $setting->save();
+
+        //generate token
+        $token = JWTAuth::fromUser($user,['exp' => Carbon::now()->addDays(1)->timestamp]);
+        //save token
+        $setting = $user->rSetting()->where('key','change_email_token')->first();
+        if($setting == null)
+        {
+            $setting = new UserSetting;
+            $setting->key = 'change_email_token';
+            $setting->user_id = $user->id;
+        }
+        $setting->value = $token;
+        $setting->save();
+        $confirmUrl = URL::to('/confirmEmailChange?token=').$token;
+        Mail::to('jssuperstar1001@gmail.com')->send(new EmailChanged($confirmUrl));
+        return response(['success' => 1,'email' => $setting->value]);
+    }
+    public function confirmEmailChange(Request $request)
+    {
+        $token = random_bytes(80);
+        $token = bin2hex($token);
+        return $token;
+    }
+    /**
+     * @Generate Two factor pin code
+     */
+    public function changeUserDeivce(Request $request) {
+        $user = auth()->user();
+
+        $pin = mt_rand(100000, 999999);
+
+        $user->password = bcrypt($pin);
+        // $user->token_2fa_expiry = Carbon::now()->addMinutes(Config::get('constants.2fa_expiry'));
+        $user->save();
+
+        Mail::to($user->email)->send(new ChangeDeviceCode($pin));
+
+        return response()->json([ 'success' => true ]);
     }
 }

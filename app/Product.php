@@ -43,12 +43,12 @@ class Product extends Model
         $thumanail = $this->rPortfolio()->where('order','=', 1)->first();
         if($thumanail != null)
         {
-            return $thumanail->filename;
+            return $this->id.'/'.$thumanail->filename;
         }
         else
         {
             $thumanail = $this->rPortfolio()->first();
-            return $thumanail != null?$thumanail->filename:'default.png';
+            return $thumanail != null?$this->id.'/'.$thumanail->filename:'default.png';
         }
     }
 
@@ -69,11 +69,11 @@ class Product extends Model
 
     public function getStoreInfoAttribute()
     {
-        $data = [];
+        $data = null;
         //get Store Name
         $store = $this->rStore;
         if($store != null){
-
+            $data = [];
             $data['storeId'] = $store->id;
             $data['storeName'] = $store->rUser == null?null:$store->rUser->nickname;
             $data['nStoreFollow'] = $store->nTotalFollow;
