@@ -134,10 +134,6 @@ class LiveController extends WowzaController
         foreach ($follows as $follow) {
             $follow->rUser->notify(new FollowStoreLiveNotification());
         }
-        // $live = Live::find(90);
-        // $live->cid          = $cid;
-        // $live->cadmin_id    = $cadmin['id'];
-        // $live->save();
 
         $response['id']         = $live->id;
         $response['liveData']   = $liveStreamReponse['source_connection_information'];
