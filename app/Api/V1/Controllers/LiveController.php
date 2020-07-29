@@ -291,11 +291,20 @@ class LiveController extends WowzaController
     {
         $response = [];
 
+        $user = auth()->user();
         $live = Live::find($id);
 
         $response = $this->liveToArray($live);
         $response['nViewer'] = 0;//$this->getUsageLiveStream($live->stream_target_id)['stream_target']['unique_viewers'];
         $response['evaluation'] = $live->rEvaluation()->count();
+        $evaluation = $live->rEvaluation()->where('user_id', $user->id)->first();
+        
+        if ($evaluation == null) {
+            $response['isLike'] = false;
+        } else {
+            $response['isLike'] = true;
+        }
+        
         $response['seller'] = [];
 
         $seller = $live->rStore->rUser;
