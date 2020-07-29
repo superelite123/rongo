@@ -53,7 +53,7 @@ class StoreController extends Controller
         $user = auth()->user();
         $store = $user->rStore;
         $follows = $store->rUsersFollow()->where('type', $type)->get();
-
+        $response = [];
         foreach($follows as $follow)
         {
             $follower = $follow->rUser;
