@@ -55,18 +55,18 @@ class LiveController extends WowzaController
         //can not create live stream
         if(!isset($liveStreamReponse['live_stream']))
         {
-            return abort(500, 'can not create Live stream');
+          return abort(500, 'can not create Live stream');
         }
         $liveStreamReponse = $liveStreamReponse['live_stream'];
 
         // $liveStreamReponse = ['id' => '23232df',
-        //                       'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
-        //                       'source_connection_information' => [
-        //                         'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                         'application_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                         'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-        //                       ]
-        // ];
+          //                     'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
+            //                   'source_connection_information' => [
+              //                   'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                //                 'application_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                  //               'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                    //           ]
+         //];
 
         /**
          * Create Chat Channel
@@ -132,8 +132,9 @@ class LiveController extends WowzaController
         $response['liveData']    = $liveStreamReponse['source_connection_information'];
         $response['hls_url']    = $live->hls_url;
         $response['channel']    = $channel;
-        $response['cid']            = $live->cid;
-        $response['cadmin_id']      = $live->cadmin_id;
+        $response['channel_id'] = $live->cid;
+        $response['cadmin_id'] = $live->cadmin_id;
+        $response['chat_user_id'] = $user->chat_id;
 
         // $follows = $user->rStore->rUsersFollow;
         // foreach ($follows as $follow) {
