@@ -59,8 +59,10 @@ class Store extends Model
 
     public function getBackgroundAttribute()
     {
-        $background = $this->rBackground()->where('order',1)->first();
+        $background = $this->rBackground()->first();
+        if($background != null)
         return asset(Storage::url('StoreBackground').'/'.$background->filename);
+        return null;
     }
 
     public function getEvaluationAttribute()
