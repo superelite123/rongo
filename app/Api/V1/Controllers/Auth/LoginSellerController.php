@@ -64,7 +64,7 @@ class LoginSellerController extends AuthController
             }
             else
             {
-                return response()->json(['success' => -2]);
+                return response()->json(['success' => 1]);
             }
         }
 
