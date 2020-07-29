@@ -148,7 +148,7 @@ trait LoadList
         {
             $item['id']             = $live->id;
             $item['title']          = $live->title;
-            $item['tag']            = $live->rTag->label;
+            $item['tag']            = $live->rTag != null?$live->rTag->label:'';
             $item['nTotalUsers']    = $live->nTotalUsers;
             $item['thumbnail']      = asset(Storage::url('LivePhoto')).'/'.$live->photo;
             $item['status']         = $live->status_id;

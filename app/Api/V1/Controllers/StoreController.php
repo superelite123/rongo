@@ -25,12 +25,15 @@ class StoreController extends Controller
         $store = Store::find($id);
         $response = [];
         $response['id'] = $store->id;
+
         $response['background']     = $store->Background;
+
         $response['isFollow']       = $store->rUsersFollow()->where(['user_id' => auth()->user()->id,'type' => 1]);
         $response['evaluation']     = $store->Evaluation;
         $response['description']    = $store->description;
         $response['explantion']     = $store->Explantions;
         //Products
+
         $options['type'] = 1;
         $options['store_id'] = $id;
         $options['status'] = [];
