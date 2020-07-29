@@ -46,6 +46,8 @@ $api->version('v1', function (Router $api) {
         $api->get('live/state/{id}', 'App\\Api\\V1\\Controllers\\LiveController@state');
         $api->get('live/view/{id}', 'App\\Api\\V1\\Controllers\\LiveController@view');
         $api->get('live/products/{id}', 'App\\Api\\V1\\Controllers\\LiveController@produts');
+        $api->get('live/like', 'App\\Api\\V1\\Controllers\\LiveController@like');
+        
         /**
          * Store
          */
