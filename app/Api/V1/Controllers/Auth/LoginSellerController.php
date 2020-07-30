@@ -81,15 +81,15 @@ class LoginSellerController extends AuthController
     {
         $user = User::find($request->id);
         //expired?
-        // if($user->token_2fa_expiry < Carbon::now())
-        // {
-        //     return response()->json(['success' => 409]);
-        // }
-        // if($user->token_2fa != $request->pwd)
-        // {
-        //     $this->Generate2faPin();
-        //     return response()->json(['success' => 401]);
-        // }
+        if($user->token_2fa_expiry < Carbon::now())
+        {
+            return response()->json(['success' => 409]);
+        }
+        if($user->token_2fa != $request->pwd)
+        {
+            $this->Generate2faPin();
+            return response()->json(['success' => 401]);
+        }
         // thumbnail: null,
         // username: null,
         // email:null,
