@@ -139,7 +139,7 @@ class ProductController extends Controller
             $response['shipper'] = $product->rShipper != null?$product->rShipper->name:'';
             $response['ship_days'] = $product->ship_days;
             //relatied store
-            $response = array_merge($response,$product->StoreInfo);
+            $response['store'] = $product->StoreInfo;
 
             //Related Lives
             $response['lives'] = [];

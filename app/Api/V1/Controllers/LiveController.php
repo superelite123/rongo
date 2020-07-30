@@ -309,7 +309,7 @@ class LiveController extends WowzaController
 
         $seller = $live->rStore->rUser;
 
-        $response['seller']['store_id'] = $live->rStore->id;
+        $response['seller']['id'] = $live->rStore->id;
         $response['seller']['name'] = $seller->nickname;
         $response['seller']['icon'] = $seller->cIcon;
 

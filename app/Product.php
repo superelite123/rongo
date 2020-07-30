@@ -74,10 +74,10 @@ class Product extends Model
         $store = $this->rStore;
         if($store != null){
             $data = [];
-            $data['storeId'] = $store->id;
-            $data['storeName'] = $store->rUser == null?null:$store->rUser->nickname;
-            $data['nStoreFollow'] = $store->nTotalFollow;
-            $data['storeThumbnail'] = $store->rUser->cIcon;
+            $data['id'] = $store->id;
+            $data['name'] = $store->rUser == null?null:$store->rUser->nickname;
+            $data['nTotalFollows'] = $store->nTotalFollow;
+            $data['icon'] = $store->rUser->cIcon;
 
             $isFollow = auth()->user()->rStoreFollow()->where('store_id',$store->id)->first();
             $data['isFollow'] = $isFollow != null?1:0;
