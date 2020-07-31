@@ -71,6 +71,7 @@ $api->version('v1', function (Router $api) {
         $api->post('register/confirm', 'App\\Api\\V1\\Controllers\\LiveController@registerConfirm');
         $api->post('add_product', 'App\\Api\\V1\\Controllers\\LiveController@addProduct');
         $api->post('like', 'App\\Api\\V1\\Controllers\\LiveController@like');
+        $api->post('disconnect','App\\Api\\V1\\Controllers\\LiveController@disconnect');
     });
     /**
      * User Detail
@@ -93,7 +94,7 @@ $api->version('v1', function (Router $api) {
         $api->post('registerAccount', 'App\\Api\\V1\\Controllers\\UserController@registerAccountInfo');
         $api->post('changeDevice', 'App\\Api\\V1\\Controllers\\UserController@changeUserDeivce');
     });
-    
+
     $api->get('confirmEmail', 'App\\Api\\V1\\Controllers\\UserController@confirmEmailChange')->middleware('jwt.auth');
     /**
      * Address

@@ -13,4 +13,8 @@ class LiveHasUser extends Model
     {
         return $this->belongsTo(Live::class,'live_id');
     }
+    public function rUser()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

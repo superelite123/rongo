@@ -149,7 +149,11 @@ trait LoadList
             $item['id']             = $live->id;
             $item['title']          = $live->title;
             $item['tag']            = $live->rTag != null?$live->rTag->label:'';
-            $item['nTotalUsers']    = $live->nTotalUsers;
+
+            $viewData = [];
+            $viewData['nWatchers']  = $live->rUsers()->where(['watch_status_id' => 1])->count();
+            $viewData['nViewers']   = $live->rUsers()->where(['watch_status_id' => 2])->count();
+            $item['nViewer']        = $viewData;
             $item['thumbnail']      = asset(Storage::url('LivePhoto')).'/'.$live->photo;
             $item['status']         = $live->status_id;
             $item['hls_url']        = $live->hls_url;
