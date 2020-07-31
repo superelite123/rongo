@@ -21,7 +21,9 @@ use GetStream\StreamChat\Client;
 use Config;
 use App\Traits\LoadList;
 use App\Events\LikeProductLiving;
+use App\Events\UserConnectLive;
 use App\Notifications\FollowStoreLiveNotification;
+use App\Notifications\UserLiveCount;
 class LiveController extends WowzaController
 {
     use LoadList;
@@ -49,26 +51,26 @@ class LiveController extends WowzaController
             'cid' => null,
             'cadmin_id' => null
         ];
-        $liveStreamReponse = [];
+        // $liveStreamReponse = [];
 
-        //Create LiveStream
-        $this->createLiveStream($request->title);
-        $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
-        //can not create live stream
-        if(!isset($liveStreamReponse['live_stream']))
-        {
-          return abort(500, 'can not create Live stream');
-        }
-        $liveStreamReponse = $liveStreamReponse['live_stream'];
+        // //Create LiveStream
+        // $this->createLiveStream($request->title);
+        // $liveStreamReponse = json_decode($this->createLiveStream($request->title),true);
+        // //can not create live stream
+        // if(!isset($liveStreamReponse['live_stream']))
+        // {
+        //   return abort(500, 'can not create Live stream');
+        // }
+        // $liveStreamReponse = $liveStreamReponse['live_stream'];
 
-        // $liveStreamReponse = ['id' => '23232df',
-          //                     'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
-            //                   'source_connection_information' => [
-              //                   'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                //                 'application_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                  //               'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                    //           ]
-         //];
+        $liveStreamReponse = ['id' => '23232df',
+                              'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
+                              'source_connection_information' => [
+                                'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                                'application_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                                'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                              ]
+         ];
 
         /**
          * Create Chat Channel
@@ -142,7 +144,7 @@ class LiveController extends WowzaController
             $customer = $follow->rUser;
 
             $setting = $customer->rSetting->where('key', 'notification_store_live')->first();
-            
+
             if ($setting->value) {
                 $notification = new Notification;
                 $notification->title = "フォロー中のストアのライブ配信";
@@ -160,7 +162,7 @@ class LiveController extends WowzaController
 
         $products = $live->rProducts;
         foreach ($products as $product) {
-            $likers = $product->rUserLike;
+            $likers = $product->rProduct!=null?$product->rProduct->rUserLike:[];
 
             foreach ($likers as $liker) {
                 $setting = $customer->rSetting->where('key', 'notification_product_live')->first();
@@ -175,12 +177,12 @@ class LiveController extends WowzaController
                     $notification->product_id = $product->id;
                     $notification->type = 3;
                     $notification->save();
-    
+
                     $customer->notify(new FollowStoreLiveNotification($notification));
                 }
             }
         }
-        
+
         return response()->json($response);
     }
 
@@ -294,17 +296,17 @@ class LiveController extends WowzaController
         $user = auth()->user();
         $live = Live::find($id);
 
+        $this->userConnect($id,1);
         $response = $this->liveToArray($live);
-        $response['nViewer'] = 0;//$this->getUsageLiveStream($live->stream_target_id)['stream_target']['unique_viewers'];
         $response['evaluation'] = $live->rEvaluation()->count();
         $evaluation = $live->rEvaluation()->where('user_id', $user->id)->first();
-        
+
         if ($evaluation == null) {
             $response['isLike'] = false;
         } else {
             $response['isLike'] = true;
         }
-        
+
         $response['seller'] = [];
 
         $seller = $live->rStore->rUser;
@@ -315,7 +317,97 @@ class LiveController extends WowzaController
 
         return response()->json( $response );
     }
+    public function disconnect(Request $request)
+    {
+        return response()->json($this->userConnect($request->id,2));
+    }
+    /**
+     * 7.30
+     * @param
+     * liveID
+     * type:
+     *  1:connect
+     *  2:disconnect
+     * @result
+     * number of users who watching live
+     */
+    public function userConnect($liveID,$type)
+    {
+        $response = ['nWatchers' => 0,'nViewers' => 0];
+        $live = Live::find($liveID);
+        $user = auth()->user();
+        if($live == null)
+        {
+            return $response;
+        }
+        $isExistUser = $live->rUsers()->where(['user_id'=>$user->id,'watch_status_id' => $live->status_id])->first();
 
+        //is Live
+        if($live->status_id == 1)
+        {
+            if($type == 1)
+            {
+                if($isExistUser == null)
+                {
+                    $insertData = new LiveHasUser;
+                    $insertData->live_id = $live->id;
+                    $insertData->user_id = $user->id;
+                    $insertData->watch_status_id = 1;
+                    $insertData->save();
+                }
+            }
+            if($type == 2)
+            {
+                if($isExistUser != null)
+                {
+                    $isExistUser->delete();
+                }
+            }
+        }
+        //archived?
+        if($live->status_id == 2)
+        {
+            //delete previous log
+
+            $insertData = new LiveHasUser;
+            $insertData->live_id = $live->id;
+            $insertData->user_id = $user->id;
+            $insertData->watch_status_id = 2;
+            $insertData->save();
+        }
+        $response['nWatchers']  = $live->rUsers()->where(['watch_status_id' => 1])->count();
+        $response['nViewers']   = $live->rUsers()->where(['watch_status_id' => 2])->count();
+        if($live->status_id == 1)
+        {
+            $this->noifyUserConnect($liveID,$response['nWatchers'],auth()->user()->nickname);
+        }
+        return $response;
+    }
+    public function noifyUserConnect($liveID,$nWatchers,$userNickname)
+    {
+        event(new UserConnectLive($liveID,$nWatchers));
+        $live = Live::find($liveID);
+        if($live == null)
+        {
+            return;
+        }
+        $notificationData = ['nWatchers' => $nWatchers,'username' => $userNickname];
+        $liveUsers = $live->rUsers;
+        foreach($liveUsers as $userID)
+        {
+            $user = $userID->rUser;
+            if($user != null)
+            {
+                $notification = new Notification;
+                $notification->title = "Live User Count";
+                $notification->body = "Live User Count Updated";
+                $notification->receiver = $user->id;
+                $notification->save();
+
+                $user->notify(new UserLiveCount($notification,$notificationData));
+            }
+        }
+    }
     public function like(Request $request) {
         $user = auth()->user();
         $liveId = $request->live_id;
