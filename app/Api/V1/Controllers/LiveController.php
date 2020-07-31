@@ -41,6 +41,7 @@ class LiveController extends WowzaController
      */
     public function create(Request $request)
     {
+	
         //Use logged in user as Seller
         $user = auth()->user();
         $response = [];
@@ -48,7 +49,8 @@ class LiveController extends WowzaController
             'success' => 1,
             'cid' => null,
             'cadmin_id' => null
-        ];
+    ];
+
         $liveStreamReponse = [];
 
         //Create LiveStream
@@ -61,13 +63,13 @@ class LiveController extends WowzaController
         }
         $liveStreamReponse = $liveStreamReponse['live_stream'];
 
-        // $liveStreamReponse = ['id' => '23232df',
-          //                     'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
-            //                   'source_connection_information' => [
-              //                   'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                //                 'application_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                  //               'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
-                    //           ]
+       //  $liveStreamReponse = ['id' => '23232df',
+         //                    'player_hls_playback_url' => 'https://cdn3.wowza.com/1/NURVSXRVTzBmV1Fl/dkxkWlQy/hls/live/playlist.m3u8',
+           //                    'source_connection_information' => [
+             //                    'sdp_url' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+               //                  'application_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                 //                'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
+                   //            ]
          //];
 
         /**
@@ -98,7 +100,7 @@ class LiveController extends WowzaController
         $live = new Live;
         $live->title        = $request->title;
         $live->store_id     = 1;
-        $live->tag_id       = $this->registerTag($request->tag);
+	$live->tag_id       = $this->registerTag($request->tag);
         $live->status_id    = 1;
         $live->stream_id    = $liveStreamReponse['id'];
         $live->hls_url      = $liveStreamReponse['player_hls_playback_url'];
@@ -114,11 +116,14 @@ class LiveController extends WowzaController
         }
         $live->photo        = $filename;
         $live->save();
-        $this->startLiveStream($liveStreamReponse['id']);
+	$this->startLiveStream($liveStreamReponse['id']);
+	
+	
         $productInsertData = [];
         foreach($request->products as $_product)
-        {
-            $productInsertData[] = new LiveHasProduct([
+	{
+    
+		$productInsertData[] = new LiveHasProduct([
                 'product_id' => $_product['id'],
                 'qty' => $_product['addQty'],
                 'sold_qty' => 0
@@ -128,7 +133,8 @@ class LiveController extends WowzaController
             $product->status_id = Config::get('constants.pStatus.staged');
             $product->save();
         }
-        $live->rProducts()->saveMany($productInsertData);
+	$live->rProducts()->saveMany($productInsertData);
+	
         $response['id']         = $live->id;
         $response['liveData']    = $liveStreamReponse['source_connection_information'];
         $response['hls_url']    = $live->hls_url;
@@ -160,7 +166,8 @@ class LiveController extends WowzaController
 
         $products = $live->rProducts;
         foreach ($products as $product) {
-            $likers = $product->rUserLike;
+		    
+		$likers = $product->rProduct != null?$product->rProduct->rUserLike:[];
 
             foreach ($likers as $liker) {
                 $setting = $customer->rSetting->where('key', 'notification_product_live')->first();
