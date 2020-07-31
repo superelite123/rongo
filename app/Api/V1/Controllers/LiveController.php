@@ -73,7 +73,6 @@ class LiveController extends WowzaController
                  //                'stream_name' => 'wss://2b5ba6.entrypoint.cloud.wowza.com/webrtc-session.json',
                    //            ]
          //];
-        ];
         
         /**
          * Create Chat Channel
