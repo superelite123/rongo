@@ -53,7 +53,7 @@ trait LoadList
             $item['numLikes']   = $product->rUserLike()->count();
             $item['isLike']     = $product->rUserLike()->where('user_id',auth()->user()->id)->get()->count() > 0?1:0;
             $item['thumbnail']  = $thumbnailRootUrl.$product->Thumbnail();
-            $item['storeName']  = $product->StoreInfo != null?$product->StoreInfo['storeName']:'';
+            $item['storeName']  = $product->StoreInfo != null?$product->StoreInfo['name']:'';
 
             $json[] = $item;
         }
@@ -149,7 +149,11 @@ trait LoadList
             $item['id']             = $live->id;
             $item['title']          = $live->title;
             $item['tag']            = $live->rTag != null?$live->rTag->label:'';
-            $item['nTotalUsers']    = $live->nTotalUsers;
+
+            $viewData = [];
+            $viewData['nWatchers']  = $live->rUsers()->where(['watch_status_id' => 1])->count();
+            $viewData['nViewers']   = $live->rUsers()->where(['watch_status_id' => 2])->count();
+            $item['nViewer']        = $viewData;
             $item['thumbnail']      = asset(Storage::url('LivePhoto')).'/'.$live->photo;
             $item['status']         = $live->status_id;
             $item['hls_url']        = $live->hls_url;
@@ -218,7 +222,7 @@ trait LoadList
             $item['ship_days'] = $product->ship_days;
             $item['shipper'] = $product->ship_days;
             $item['storeId'] = $product->store_id;
-            $item['storeName'] = $product->StoreInfo != []?$product->StoreInfo['storeName']:'';
+            $item['storeName'] = $product->StoreInfo != []?$product->StoreInfo['name']:'';
             $item['storeThumbnail'] = $product->rStore != null?$product->rStore->rUser->cIcon:'';
         }
         else

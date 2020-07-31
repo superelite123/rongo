@@ -26,6 +26,13 @@ class StoreController extends Controller
         $response = [];
         $response['id'] = $store->id;
 
+        $response['name'] = $store->rUser == null?null:$store->rUser->nickname;
+        $response['nTotalFollows'] = $store->nTotalFollow;
+        $response['icon'] = $store->rUser->cIcon;
+
+        $isFollow = auth()->user()->rStoreFollow()->where('store_id',$store->id)->first();
+        $response['isFollow'] = $isFollow != null?1:0;
+
         $response['background']     = $store->Background;
 
         $response['isFollow']       = $store->rUsersFollow()->where(['user_id' => auth()->user()->id,'type' => 1]);

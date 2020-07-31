@@ -19,7 +19,10 @@ class NotificationController extends Controller
         $response = [];
         foreach($notifications as $notification)
         {
-            $response[] = $notification;//$this->notificationtoArray($notification);
+            if(!($notification->type == 0 || $notification->type == null)) {
+                $response[] = $notification;
+            }
+            //$this->notificationtoArray($notification);
         }
 
         return response()->json($response);
