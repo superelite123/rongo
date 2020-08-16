@@ -57,12 +57,12 @@ class LoginSellerController extends AuthController
 
         if($user != null)
         {
-            if(Hash::check($request->password,$user->password))
-            {
+            // if(Hash::check($request->password,$user->password))
+            // {
                 $this->Generate2faPin($user->id);
                 return response()->json(['success' => $user->id]);
-            }
-            else
+            // }
+            // else
             {
                 return response()->json(['success' => -1]);
             }
